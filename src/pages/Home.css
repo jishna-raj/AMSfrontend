@@ -1,0 +1,89 @@
+
+
+
+  
+  .stat-item {
+    transition: transform 0.3s;
+  }
+  
+  .stat-item:hover {
+    transform: scale(1.1);
+  }
+  
+  .feature-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .feature-icon {
+    width: 50px;
+    height: 50px;
+    color: rgb(6, 59, 6);
+    transition: color 0.3s;
+  }
+  
+  .feature-card:hover .feature-icon {
+    color: #2575fc;
+  }
+  
+  .bg-light {
+    background-color: #f8f9fa !important;
+    
+  }
+  
+  .d-flex {
+    align-items: center;
+  }
+  
+  .d-flex h5 {
+    margin-bottom: 0.5rem;
+  }
+  
+  .d-flex p {
+    margin-bottom: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .hero-section {
+      padding: 3rem 1rem;
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+}
+  .hero-section {
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  .features-section {
+    animation: fadeIn 1s ease-in-out;
+    animation-delay: 0.5s;
+  }
+
+
+
+
+#b1 {
+  color: white;
+  background-color: rgb(24, 104, 107);
+
+}
+
+#b1:hover {
+  background-color: transparent;
+  border: solid 2px rgb(24, 104, 107);
+  color: black;
+  box-shadow: 0 0 10px rgb(24, 104, 107);
+}
