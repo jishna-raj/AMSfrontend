@@ -1,0 +1,157 @@
+/* Pregnant.css */
+
+/* General Styles */
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(to right, #e0e7ff, #f3e8ff);
+    color: #4c1d95;
+   
+  }
+  
+  .container4 {
+
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Title */
+  .title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin-bottom: 2rem;
+    color: #faf9fc;
+    animation: fadeIn 1s ease-in-out;
+    padding: 10px;
+  }
+  
+  /* Row Styles */
+  .row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  /* Card Styles */
+  .card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    flex: 1;
+    
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .card h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #4c1d95;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 0.5rem;
+  }
+  
+  .card p {
+    font-size: 1rem;
+    color: #6b46c1;
+    margin-bottom: 0.75rem;
+  }
+  
+  .card p strong {
+    color: #4c1d95;
+  }
+  
+  .card .status {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  
+  .card .status.active {
+    color: #16a34a;
+  }
+  
+  .card .status.inactive {
+    color: #dc2626;
+  }
+  
+  .card .nutrition-status {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  
+  .card .nutrition-status.normal {
+    color: #16a34a;
+  }
+  
+  .card .nutrition-status.underweight {
+    color: #d97706;
+  }
+  
+  /* Health Records and Vaccination Details */
+  .health-records,
+  .vaccination-details {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(5px);
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-top: 1.5rem;
+  }
+  
+  .health-records h3,
+  .vaccination-details h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #4c1d95;
+  }
+  
+  .health-records p,
+  .vaccination-details p {
+    font-size: 0.875rem;
+    color: #6b46c1;
+    margin-bottom: 0.5rem;
+  }
+  
+  .health-records p:last-child,
+  .vaccination-details p:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 1s ease-in-out;
+
+  }
+  
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-in-out;
+    
+  }

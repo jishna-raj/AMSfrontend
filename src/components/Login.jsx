@@ -1,6 +1,6 @@
 import React from 'react'
 import login from '../assets/login.webp'
-import { Link } from 'react-router-dom'
+
 
 function Login() {
     return (
@@ -38,12 +38,19 @@ function Login() {
                                         required
                                     />
                                 </div>
-                                <button type="button" className="button w-100" style={{ transition: 'background-color 0.3s',backgroundColor:'#5a0a72'}} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'black'} onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#5a0a72'}>Login</button>
+
+                                <div className="form-group">
+                                    <label htmlFor="healthId" id='healthid' className='fw-bold'>HealthId</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Enter your HealthId"
+                                        required
+                                    />
+                                </div>
+                                <button type="button" className="btn text-light fw-bold w-100" style={{ transition: 'background-color 0.3s',backgroundColor:'#4a0d5c'}} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'black'} onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4a0d5c'}>Login</button>
                             </form>
-                            <div className="text-center mt-3">
-                                <p>Are you not a registered user? <Link to={"/user-reg"} style={{textDecoration:"none"}}><span id='reg'>Register</span></Link></p>
-                                
-                            </div>
+
                         </div>
                     </div>
                 </div>

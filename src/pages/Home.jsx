@@ -14,10 +14,13 @@ import {
 } from 'lucide-react';
 import './Home.css';
 import About from '../components/About';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 function Home() {
   return (
     <div>
+      <Header/>
       <div className="main-wrapper">
         <div className="row w-100 home " style={{ marginLeft: "150px" }}>
           <div className="col-md-5 mt-5">
@@ -37,7 +40,7 @@ function Home() {
         </div>
 
 
-        <Container className="stats-section py-5">
+        <Container className="stats-section py-5" style={{backgroundColor:"transparent",boxShadow:"0px 0px 0px",marginTop:"20px"}}>
           <Row className="text-center">
             <Col md={3} sm={6} className="mb-4">
               <div className="stat-item" style={{color:'rgb(6, 59, 6)'}}>
@@ -67,15 +70,15 @@ function Home() {
         </Container>
       </div>
 
-      <Container className="features-section py-5">
+      <Container className="features-section p-4" style={{backgroundColor:"transparent",boxShadow:"0px 0px 0px"}}>
         <h2 className="text-center mb-5">Key Features</h2>
-        <Row>
+        <Row className='w-100'>
           <Col lg={4} md={6} className="mb-4">
             <Card className="h-100 feature-card">
               <Card.Body>
                 <Users className="feature-icon mb-3" />
                 <Card.Title>Child Management</Card.Title>
-                <Card.Text>
+                <Card.Text style={{fontSize:'20px'}}>
                   Complete child registration system with demographic details, family information, and development tracking.
                 </Card.Text>
               </Card.Body>
@@ -86,7 +89,7 @@ function Home() {
               <Card.Body>
                 <Apple className="feature-icon mb-3" />
                 <Card.Title>Nutrition Monitoring</Card.Title>
-                <Card.Text>
+                <Card.Text style={{fontSize:'20px'}}>
                   Track daily meals, nutritional supplements, and dietary requirements for each child.
                 </Card.Text>
               </Card.Body>
@@ -97,7 +100,7 @@ function Home() {
               <Card.Body>
                 <Activity className="feature-icon mb-3" />
                 <Card.Title>Health Tracking</Card.Title>
-                <Card.Text>
+                <Card.Text style={{fontSize:'20px'}}>
                   Monitor immunizations, health checkups, and growth metrics with detailed reporting.
                 </Card.Text>
               </Card.Body>
@@ -109,7 +112,7 @@ function Home() {
               <Card.Body>
                 <User Check className='feature-icon mb-3' />
                 <Card.Title>User Management</Card.Title>
-                <Card.Text>
+                <Card.Text style={{fontSize:'20px'}}>
                   Update and manage user profiles including personal information, contact details, and addresses.
                 </Card.Text>
               </Card.Body>
@@ -121,7 +124,7 @@ function Home() {
               <Card.Body>
                 <SquareMousePointer className='feature-icon mb-3' />
                 <Card.Title>Inventory Management</Card.Title>
-                <Card.Text>
+                <Card.Text style={{fontSize:'20px'}}>
                   Track inventory items including quantity, unit price, and supplier information.
                 </Card.Text>
               </Card.Body>
@@ -133,7 +136,7 @@ function Home() {
               <Card.Body>
                 <NotebookText className="feature-icon mb-3" />
                 <Card.Title>Beneficiary Management</Card.Title>
-                <Card.Text>
+                <Card.Text style={{fontSize:'20px'}}>
                   Monitor immunizations, health checkups, and growth metrics with detailed reporting.
                 </Card.Text>
               </Card.Body>
@@ -146,7 +149,7 @@ function Home() {
 
       {/* Additional Features */}
       <div className="bg-light py-5">
-        <Container>
+        <Container style={{backgroundColor:"transparent",boxShadow:"0px 0px 0px"}}>
           <h2 className="text-center mb-5">Additional Services</h2>
           <Row>
             <Col md={4} className="mb-4">
@@ -179,6 +182,8 @@ function Home() {
           </Row>
         </Container>
       </div>
+
+      <Footer/>
     </div>
   );
 }

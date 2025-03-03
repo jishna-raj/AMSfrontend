@@ -1,0 +1,51 @@
+
+.container {
+    width: 400px;
+    background-color: #1461048c;
+   
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.623);
+}
+
+h2 {
+    color: #f1ececd8;
+    text-align: center;
+    font-weight: 900;
+}
+
+.form-label {
+    font-weight: bold;
+    color: #181717;
+}
+
+.button2 {
+    width: 20%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: green ;
+    
+}
+.worker{
+    background-color: aquamarine;
+   
+}
+
+.background-wrapper {
+    background-image: url('https://img.freepik.com/free-photo/abstract-blur-empty-green-gradient-studio-well-use-as-background-website-template-frame-business-report_1258-54629.jpg?w=360'); /* Replace with the path to your image */
+    background-size: cover; 
+    background-position: center;
+    background-repeat: no-repeat; 
+    min-height: 150vh; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+   
+}
+
+.background-wrapper .container {
+    background-color: rgba(255, 255, 255, 0.514); /* Optional: Adds a semi-transparent white background to the form */
+    border-radius: 10px; 
+    padding: 20px;
+    margin-bottom: 60px;
+}

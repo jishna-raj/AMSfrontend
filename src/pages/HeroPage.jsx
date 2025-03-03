@@ -24,7 +24,7 @@ function HeroPage() {
       }}
     >
 
-<button className="btn btn-light text-dark fw-bold my-5 " style={{marginLeft:'1100px'}}>Parent section <FontAwesomeIcon icon={faArrowRight} className="ms-2" /></button>
+<Link to={'/parent-register'}><button className="btn btn-light text-dark fw-bold my-5 " style={{marginLeft:'1100px'}}>Parent section <FontAwesomeIcon icon={faArrowRight} className="ms-2" /></button></Link>
       <div className="row p-4">
       
         <div className="col-md-12 text-center">

@@ -7,7 +7,7 @@ function Footer() {
   return (
     <>
       <footer className="bg-dark text-white py-5">
-        <Container>
+        <Container style={{backgroundColor:"transparent",boxShadow:"0px 0px 0px"}}>
           <Row>
             <Col md={6}>
               <div className="text-justify">

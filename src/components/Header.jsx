@@ -7,7 +7,7 @@ function Header() {
     return (
         <>
             <Navbar variant="dark" expand="lg" className="header py-3">
-                <Container>
+                <Container style={{backgroundColor:"transparent",boxShadow:"0px 0px 0px"}}>
                     <Navbar.Brand href="#home" className='logo'>
                         <img src="https://d18x2uyjeekruj.cloudfront.net/wp-content/uploads/2023/06/unnamed-1.png" alt="Logo" className="d-inline-block align-top me-2 logo-img" />
                         Anganwadi MS

@@ -1,0 +1,228 @@
+/* LactatingMothers.css */
+
+.mothers-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+  }
+  
+  .page-title {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 2.5rem;
+    font-size: 2.5rem;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    position: relative;
+  }
+  
+  .page-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: #08a52f;
+    margin: 0.5rem auto;
+    border-radius: 2px;
+  }
+  
+  .mothers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    padding: 1rem 0;
+  }
+  
+  .mother-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s ease;
+    position: relative;
+  }
+  
+  .mother-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+  }
+  
+  .card-header {
+    background: linear-gradient(135deg, #040e08, #0adb49);
+    padding: 1.5rem;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .profile-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+
+  
+  .header-text h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: white;
+  }
+  
+  .header-text .age {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+    color: white;
+    font-weight: 400;
+  }
+  
+
+  
+  .status-badge.active {
+    background: #27ae60;
+  }
+  
+  .status-badge.inactive {
+    background: #e74c3c;
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+    background: #f9fbfd;
+  }
+  
+  .info-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .info-item .icon {
+    font-size: 1.4rem;
+    color: #055719;
+    flex-shrink: 0;
+  }
+  
+  .info-group {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .info-group label {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+    margin-bottom: 0.3rem;
+  }
+  
+  .info-group p {
+    margin: 0;
+    color: #2c3e50;
+    font-weight: 500;
+  }
+  
+  .blood-group {
+    color: #e74c3c !important;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  
+  .status {
+    font-weight: 600 !important;
+    text-transform: capitalize;
+  }
+  
+  .status.exclusive {
+    color: #27ae60;
+  }
+  
+  .status.partial {
+    color: #f1c40f;
+  }
+  
+  .status.none {
+    color: #e74c3c;
+  }
+  
+  .notes {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ecf0f1;
+  }
+  
+  .notes label {
+    display: block;
+    font-weight: 500;
+    color: #7f8c8d;
+    margin-bottom: 0.5rem;
+  }
+  
+  .notes p {
+    margin: 0;
+    color: #2c3e50;
+    line-height: 1.5;
+    font-size: 0.95rem;
+  }
+  
+  .card-footer {
+    display: flex;
+    gap: 0.8rem;
+    padding: 1.5rem;
+    background: #f9fbfd;
+    border-top: 1px solid #ecf0f1;
+  }
+  
+  
+  
+   .btn-icon {
+    font-size: 1rem;
+  }
+  
+
+  
+  .active {
+    color: #27ae60;
+    font-weight: 600;
+  }
+  
+  .inactive {
+    color: #e74c3c;
+    font-weight: 600;
+  }
+  
+  @media (max-width: 768px) {
+    .mothers-container {
+      padding: 0 1rem;
+    }
+    
+    .mother-card {
+      margin-bottom: 1.5rem;
+    }
+    
+    .page-title {
+      font-size: 2rem;
+    }
+    
+    .info-row {
+      grid-template-columns: 1fr;
+    }
+  }

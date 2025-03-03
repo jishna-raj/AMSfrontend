@@ -1,0 +1,132 @@
+/* ChildBeneficiary.css */
+
+.child-beneficiary-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .form-title {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    font-size: 2.2rem;
+    font-weight: 600;
+  }
+  
+  .form-section {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    background: white;
+  }
+  
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #3498db;
+    padding: 0 0.5rem;
+  }
+  
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+  
+  .input-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #34495e;
+    font-size: 0.95rem;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  .form-input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  }
+  
+  .form-input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.5);
+  }
+  
+  textarea.form-input {
+    min-height: 100px;
+    resize: vertical;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .submit-btn {
+    background-color: #27ae60;
+    color: white;
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .submit-btn:hover {
+    background-color: #219a52;
+  }
+  
+  .reset-btn {
+    background-color: #e74c3c;
+    color: white;
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .reset-btn:hover {
+    background-color: #c0392b;
+  }
+  
+  @media (max-width: 768px) {
+    .child-beneficiary-container {
+      padding: 1rem;
+    }
+    
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+      flex-direction: column;
+    }
+    
+    .submit-btn,
+    .reset-btn {
+      width: 100%;
+    }
+  }

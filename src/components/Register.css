@@ -1,0 +1,22 @@
+
+@keyframes fadeBackground {
+    0% {
+      background-image: url('https://www.eoffice.scriptbank.in/assets/loginBackground.jpg'); 
+    }
+    50% {
+      background-image: url('../assets/pexels-jplenio-1103970.jpg');
+    }
+    100% {
+      background-image: url('https://www.eoffice.scriptbank.in/assets/loginBackground.jpg'); 
+    }
+  }
+  
+  .cont {
+    position: relative;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    animation: fadeBackground 15s infinite ease-in-out;
+   
+  }
+  

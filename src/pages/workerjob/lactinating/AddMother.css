@@ -1,0 +1,131 @@
+/* AddLactatingMother.css */
+
+.add-beneficiary-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.page-title {
+    font-size: 2.2rem;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.beneficiary-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #34495e;
+    font-size: 0.9rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: border-color 0.3s ease;
+    background-color: #f8f9fa;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3498db;
+    background-color: white;
+}
+
+.form-input[readonly],
+.form-input:disabled {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+    border-color: #d0d0d0;
+}
+
+.form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1em;
+}
+
+.form-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.submit-button {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: 1.5rem auto 0;
+    padding: 1rem;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-button:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.checkbox-input {
+    width: 18px;
+    height: 18px;
+    accent-color: #3498db;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .add-beneficiary-container {
+        padding: 1rem;
+    }
+    
+    .page-title {
+        font-size: 1.8rem;
+    }
+    
+    .beneficiary-form {
+        padding: 1rem;
+    }
+}

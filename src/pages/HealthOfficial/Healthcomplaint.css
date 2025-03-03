@@ -1,0 +1,102 @@
+/* Health Complaint Container */
+.health-complaint-container {
+    padding: 40px;
+    font-family: 'Poppins', sans-serif;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 20px auto;
+  }
+  
+  .health-complaint-container h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #083b14;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  /* Form */
+  .health-complaint-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  /* Form Groups */
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .form-group label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #083b14;
+  }
+  
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #f9f9f9;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
+  }
+  
+  .form-group textarea {
+    resize: vertical;
+  }
+  
+  /* Submit Button */
+  .form-actions {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .submit-button {
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, #0f8d19, #09070a);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .submit-button:hover {
+    background: linear-gradient(135deg, #030303, #0f8d19);
+    transform: translateY(-2px);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .health-complaint-container {
+      padding: 15px;
+    }
+  
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      padding: 8px;
+    }
+  
+    .submit-button {
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+  }
