@@ -1,74 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import {getaChildByIdApi  } from '../../services/allapi'; // Adjust the import path as needed
 import './Child.css'; // Import the CSS file
+import { serverUrl } from '../../services/serverurl';
 
 function Child() {
-  // Sample data (replace with actual data)
-  const child = {
-    id: "12345",
-    name: "Rahul Sharma",
-    age: 5,
-    gender: "Male",
-    dateOfBirth: "2018-03-15",
-    address: {
-      street: "123 Gandhi Road",
-      city: "Mumbai",
-      state: "Maharashtra",
-      zipCode: "400001",
-    },
-    parentDetails: {
-      parentName: "Rajesh Sharma",
-      parentContact: "9876543210",
-      parentEmail: "rajesh.sharma@example.com",
-      parentOccupation: "Engineer",
-    },
-    siblings: [
-      {
-        name: "Riya Sharma",
-        age: 8,
-        relationship: "Sister",
-      },
-      {
-        name: "Aryan Sharma",
-        age: 3,
-        relationship: "Brother",
-      },
-    ],
-    healthRecords: [
-      {
-        date: "2023-01-10",
-        weight: 18.5,
-        height: 105,
-        immunizations: ["Polio", "BCG"],
-        illnesses: ["Common Cold"],
-      },
-      {
-        date: "2023-06-15",
-        weight: 20.0,
-        height: 108,
-        immunizations: ["MMR"],
-        illnesses: [],
-      },
-    ],
-    medicalHistory: {
-      chronicConditions: ["Asthma"],
-      surgeries: ["Tonsillectomy (2022)"],
-    },
-    allergies: ["Peanuts", "Dust"],
-    dietaryPreferences: {
-      vegetarian: true,
-      lactoseIntolerant: false,
-    },
-    emergencyContact: {
-      name: "Neha Sharma",
-      relationship: "Aunt",
-      contactNumber: "9876543211",
-    },
-    nutritionStatus: {
-      date: "2023-07-01",
-      status: "Normal",
-    },
-    imageUrl: "https://img.freepik.com/free-photo/stylish-little-smiling-girl-posing-dress-isolated-white-studio-background-caucasian-blonde-female-model-human-emotions-facial-expression-childhood-standing-with-hands-crossed_155003-23028.jpg", // Placeholder image URL
-  };
+  const { id } = useParams(); // Get the child ID from the URL
+  const [child, setChild] = useState(null); // State to store the child's details
+  const [loading, setLoading] = useState(true); // State to handle loading
+  const [error, setError] = useState(null); // State to handle errors
+
+  // Fetch the child's details when the component mounts
+  useEffect(() => {
+    const fetchChild = async () => {
+      try {
+        const response = await getaChildByIdApi(id);
+        console.log(response);
+         
+        if (response && response.data.child) {
+          setChild(response.data.child); // Update state with fetched data
+        } else {
+          setError('Child not found'); // Handle case where no data is returned
+        }
+      } catch (err) {
+        setError('Failed to fetch child details'); // Handle API errors
+        console.error('Error fetching child:', err);
+      } finally {
+        setLoading(false); // Set loading to false after the operation
+      }
+    };
+
+    fetchChild();
+  }, [id]);
+
+  // Display loading state
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  // Display error state
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="child-details">
@@ -79,7 +52,7 @@ function Child() {
         <div className="child-details-content">
           {/* Left Column: Child Image */}
           <div className="child-image-section">
-            <img src={child.imageUrl} alt="Child" className="child-image" />
+            <img src={`${serverUrl}/uploads/${child.childImage}`} alt="Child" className="child-image" />
           </div>
 
           {/* Right Column: Child Details */}
@@ -105,7 +78,7 @@ function Child() {
                 <strong>Gender:</strong> {child.gender}
               </p>
               <p className="detail-item">
-                <strong>Date of Birth:</strong> {child.dateOfBirth}
+                <strong>Date of Birth:</strong> {new Date(child.dateOfBirth).toISOString().split('T')[0]}
               </p>
               <p className="detail-item">
                 <strong>Address:</strong> {child.address.street}, {child.address.city}, {child.address.state}, {child.address.zipCode}
@@ -155,7 +128,7 @@ function Child() {
           {child.healthRecords.map((record, index) => (
             <div key={index} className="record">
               <p className="detail-item">
-                <strong>Date:</strong> {record.date}
+                <strong>Date:</strong> {new Date(record.date).toISOString().split('T')[0]}
               </p>
               <p className="detail-item">
                 <strong>Weight:</strong> {record.weight} kg
@@ -221,7 +194,7 @@ function Child() {
         <div className="section">
           <h3>Nutrition Status</h3>
           <p className="detail-item">
-            <strong>Date:</strong> {child.nutritionStatus.date}
+            <strong>Date:</strong> {new Date(child.nutritionStatus.date).toISOString().split('T')[0]}
           </p>
           <p className="detail-item">
             <strong>Status:</strong> {child.nutritionStatus.status}

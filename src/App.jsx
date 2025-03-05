@@ -50,8 +50,8 @@ function App() {
       <Routes>
         <Route path='/' element={<HeroPage />} />
         <Route path='/user-login' element={<Login />} />
-        <Route path='/admin-reg' element={<Reg admin />} />
-        <Route path='/admin-log' element={<LoginPage admin />} />
+        <Route path='/admin-reg' element={<Reg admin={true} />} />
+        <Route path='/admin-log' element={<LoginPage admin={true} />} />
         <Route path='/reg-worker' element={<Reg />} />
         <Route path='/login-worker' element={<LoginPage />} />
         <Route path='/parent-login' element={<ParentLogin />} />
@@ -72,10 +72,10 @@ function App() {
 
         <Route path='/add-worker' element={<Wadd />} />
         <Route path='/update-worker' element={<Wupdate />} />
-        <Route path='/child' element={<Child />} />
+        <Route path='/child/:id' element={<Child />} />
         <Route path='/display-child' element={<DisplayChild />} />
         <Route path='/add-child' element={<ChildAdd />} />
-        <Route path='/update-child' element={<ChildUpdate />} />
+        <Route path='/update-child/:id' element={<ChildUpdate />} />
 
 
         <Route path='/complaints' element={<Complaints />} />
