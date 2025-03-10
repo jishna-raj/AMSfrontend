@@ -1,0 +1,43 @@
+
+
+
+
+.staff-card {
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin: 20px;
+}
+
+.staff-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.staff-details {
+    color: #333;
+}
+
+.staff-details h5 {
+    color: #0a551a;
+}
+
+.btn-outline-success {
+    border-color: #31800f;
+    color: #31800f;
+}
+
+.btn-outline-success:hover {
+    background-color: #31800f;
+    color: white;
+}
+
+.btn-outline-danger {
+    border-color: #f93b0b;
+    color: #f93b0b;
+}
+
+.btn-outline-danger:hover {
+    background-color: #f93b0b;
+    color: white;
+}

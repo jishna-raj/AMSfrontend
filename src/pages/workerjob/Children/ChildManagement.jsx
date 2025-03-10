@@ -1,174 +1,175 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import { getallchildbeneficiaryApi, deleteChildBeneficiaryApi } from '../../../services/allapi';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function ChildManagement() {
-  // Example data (replace with actual data from state or props)
-  const child = {
-    _id: '1',
-    name: 'John Doe',
-    age: 5,
-    gender: 'Male',
-    dateOfBirth: new Date('2018-05-15').toLocaleDateString(),
-    address: {
-      street: '123 Main St',
-      city: 'New York',
-      state: 'NY',
-      zipCode: '10001',
-    },
-    parent: 'Jane Doe',
-    healthRecords: [
-      {
-        date: new Date('2023-01-10').toLocaleDateString(),
-        weight: 18.5,
-        height: 110,
-        immunizations: ['MMR', 'Varicella'],
-        illnesses: [],
-      },
-    ],
-    nutritionStatus: {
-      date: new Date('2023-01-10').toLocaleDateString(),
-      status: 'Normal',
-    },
-    educationDetails: {
-      preschoolName: 'Sunshine Preschool',
-      enrollmentDate: new Date('2022-09-01').toLocaleDateString(),
-      progress: 'Excellent',
-    },
-    guardian: {
-      name: 'Jane Doe',
-      relationship: 'Mother',
-      contactNumber: '+1-123-456-7890',
-      email: 'jane.doe@example.com',
-      address: {
-        street: '123 Main St',
-        city: 'New York',
-        state: 'NY',
-        zipCode: '10001',
-      },
-    },
-    lastVisitDate: new Date('2023-03-15').toLocaleDateString(),
-    vaccinationDetails: [
-      {
-        vaccineName: 'Flu Shot',
-        dateAdministered: new Date('2023-10-15').toLocaleDateString(),
-        administeredBy: 'Dr. Smith',
-        notes: 'No side effects',
-      },
-    ],
+  const [childBeneficiaries, setChildBeneficiaries] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchChildBeneficiaries = async () => {
+      try {
+        const response = await getallchildbeneficiaryApi();
+        console.log('API Data:', response);
+
+        // Add explicit array check
+        if (Array.isArray(response.data.data)) {
+          setChildBeneficiaries(response.data.data);
+        } else {
+          throw new Error('Received data is not an array');
+        }
+      } catch (err) {
+        setError(err.message || 'Failed to fetch child beneficiaries');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchChildBeneficiaries();
+  }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      const confirmDelete = window.confirm('Are you sure you want to delete this beneficiary?');
+      if (!confirmDelete) return;
+
+      await deleteChildBeneficiaryApi(id);
+      setChildBeneficiaries(prev => prev.filter(child => child._id !== id));
+      toast.success('Beneficiary deleted successfully');
+    } catch (error) {
+      toast.error('Failed to delete beneficiary');
+      console.error('Delete error:', error);
+    }
   };
 
+  if (loading) {
+    return <div className="container p-5 text-center">Loading child beneficiaries...</div>;
+  }
+
+  if (error) {
+    return <div className="container p-5 text-center text-danger">{error}</div>;
+  }
+
   return (
-    <div className="container p-5 mt-4">
-      <div className="d-flex justify-content-between align-items-center">
+    <div className="child-beneficiary-container p-5 mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h2 className="mb-4 fw-bold">Child Beneficiary Details</h2>
-          <p className="text-center text-secondary mb-5 fw-bold">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum, natus itaque aperiam adipisci iusto, dolor
-            suscipit minus labore maiores nam officiis. Repellat est possimus nemo molestiae dolores amet debitis quisquam.
-          </p>
+          <h2 className="fw-bold">Child Beneficiary Management</h2>
+          <p className="text-muted">Manage and view all child beneficiary records</p>
         </div>
-        <Link to={'/add-childbeneficiary'}>
-          <button className="btn mt-3" style={{ marginLeft: '80px' }}>
-            <FontAwesomeIcon icon={faPlus} />
-          </button>
+        <Link to="/add-childbeneficiary" className="btn btn-primary">
+          <FontAwesomeIcon icon={faPlus} className="me-2" />
+          Add New
         </Link>
       </div>
 
-      <div className="row">
-        <div className="col-md-5 mb-4">
-          <div className="card shadow shadow-sm">
-            <div className="card-header1 d-flex justify-content-between align-items-center">
-              <h5 className="mb-0">{child.name}</h5>
-              <div>
-                <Link to={'/update-childbeneficiary'}>
-                  <button className="btn btn-link text-primary">
+      <div className="row w-100">
+        {childBeneficiaries.map((child) => (
+          <div className="m-4 col-md-2 col-lg-3" key={child?._id}>
+            <div className="card h-100 shadow-sm">
+              <div className="card-header3 d-flex justify-content-between align-items-center bg-light">
+                <h5 className="card-title mb-0">{child?.name}</h5>
+
+                <div>
+                  <Link
+                    to={`/update-childbeneficiary/${child?._id}`}
+                    className="btn btn-sm btn-outline-primary me-2"
+                  >
                     <FontAwesomeIcon icon={faEdit} />
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(child?._id)}
+                    className="btn btn-sm btn-outline-danger"
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
                   </button>
-                </Link>
-                <button className="btn btn-link text-danger">
-                  <FontAwesomeIcon icon={faTrash} />
-                </button>
-              </div>
-            </div>
-
-            <div className="card-body">
-              <div className="mb-3">
-                <h6 className="text-secondary">Basic Information</h6>
-                <p className="mb-1">Age: {child.age}</p>
-                <p className="mb-1">Gender: {child.gender}</p>
-                <p className="mb-1">DOB: {child.dateOfBirth}</p>
+                </div>
               </div>
 
-              <div className="mb-3">
-                <h6 className="text-secondary">Address</h6>
-                <p className="mb-0">
-                  {child.address.street}, {child.address.city}, {child.address.state} {child.address.zipCode}
-                </p>
+              <div className='mt-2' style={{ height: "1px", backgroundColor: "green" }}></div>
+
+              <div className="card-body">
+                {/* Basic Information */}
+                <div className="mb-3">
+                  <h6 className="text-muted small">Basic Information</h6>
+                  <ul className="list-unstyled mb-0">
+                    <li>Age: {child?.age}</li>
+                    <li>Gender: {child?.gender}</li>
+                    <li>DOB: {new Date(child?.dateOfBirth).toLocaleDateString()}</li>
+                  </ul>
+                </div>
+
+                {/* Address */}
+                <div className="mb-3">
+                  <h6 className="text-muted small">Address</h6>
+                  <p className="mb-0">
+                    {child?.address?.street}, {child?.address?.city}<br />
+                    {child?.address?.state}, {child?.address?.zipCode}
+                  </p>
+                </div>
+
+                {/* Guardian Details */}
+                <div className="mb-3">
+                  <h6 className="text-muted small">Guardian Details</h6>
+                  <ul className="list-unstyled mb-0">
+                    <li>Name: {child?.guardian?.name}</li>
+                    <li>Relationship: {child?.guardian?.relationship}</li>
+                    <li>Contact: {child?.guardian?.contactNumber}</li>
+                    {child?.guardian?.email && <li>Email: {child.guardian.email}</li>}
+                  </ul>
+                </div>
+
+                {/* Health Records */}
+                {Array.isArray(child?.healthRecords) && child.healthRecords.length > 0 && (
+                  <div className="mb-3">
+                    <h6 className="text-muted small">Health Records</h6>
+                    <ul className="list-unstyled">
+                      {child.healthRecords.map((record, index) => (
+                        <li key={`health-${index}`} className="small">
+                          Date: {new Date(record?.date).toLocaleDateString()}<br />
+                          Weight: {record?.weight} kg<br />
+                          Height: {record?.height} cm  <br /> <br />
+                          immunization: {record?.immunizations}<br />
+                          recentIllness:{record?.illnesses}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Vaccination Details */}
+                {Array.isArray(child?.vaccinationDetails) && child.vaccinationDetails.length > 0 && (
+                  <div className="mb-3">
+                    <h6 className="text-muted small">Vaccinations</h6>
+                    <ul className="list-unstyled">
+                      {child.vaccinationDetails.map((vaccine, index) => (
+                        <li key={`vaccine-${index}`} className="small">
+                          {vaccine?.vaccineName} - {new Date(vaccine?.dateAdministered).toLocaleDateString()}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
 
-              <div className="mb-3">
-                <h6 className="text-secondary">Parent/Guardian</h6>
-                <p className="mb-0">Parent: {child.parent}</p>
-                <p className="mb-0">Guardian: {child.guardian.name} ({child.guardian.relationship})</p>
-                <p className="mb-0">Contact: {child.guardian.contactNumber}</p>
-                <p className="mb-0">Email: {child.guardian.email}</p>
-                <p className="mb-0">
-                  Guardian Address: {child.guardian.address.street}, {child.guardian.address.city},{' '}
-                  {child.guardian.address.state} {child.guardian.address.zipCode}
-                </p>
-              </div>
-
-              <div className="mb-3">
-                <h6 className="text-secondary">Education</h6>
-                <p className="mb-1">Preschool: {child.educationDetails.preschoolName}</p>
-                <p className="mb-1">Enrolled: {child.educationDetails.enrollmentDate}</p>
-                <p className="mb-0">Progress: {child.educationDetails.progress}</p>
-              </div>
-
-              <div className="mb-3">
-                <h6 className="text-secondary">Health Status</h6>
-                <p className="mb-1">Nutrition: {child.nutritionStatus.status} (as of {child.nutritionStatus.date})</p>
-                <p className="mb-1">Last Visit: {child.lastVisitDate}</p>
-              </div>
-
-              <div className="mb-3">
-                <h6 className="text-secondary">Health Records</h6>
-                <ul className="list-unstyled">
-                  {child.healthRecords.map((record, index) => (
-                    <li key={index} className="mb-2">
-                      <small>
-                        Date: {record.date} <br />
-                        Weight: {record.weight} kg, Height: {record.height} cm <br />
-                        Immunizations: {record.immunizations.join(', ')} <br />
-                        Illnesses: {record.illnesses.join(', ') || 'None'}
-                      </small>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mb-3">
-                <h6 className="text-secondary">Vaccinations</h6>
-                <ul className="list-unstyled">
-                  {child.vaccinationDetails.map((vaccine, index) => (
-                    <li key={index} className="mb-2">
-                      <small>
-                        Vaccine: {vaccine.vaccineName} <br />
-                        Date Administered: {vaccine.dateAdministered} <br />
-                        Administered by: {vaccine.administeredBy} <br />
-                        Notes: {vaccine.notes}
-                      </small>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <p className='fw-bold'> Last visit: {child?.lastVisitDate && new Date(child.lastVisitDate).toLocaleDateString()}</p>
             </div>
           </div>
-        </div>
-        <div className="col-md-1"></div>
+        ))}
       </div>
+
+      {childBeneficiaries.length === 0 && !loading && (
+        <div className="text-center mt-5">
+          <h4 className="text-muted">No child beneficiaries found</h4>
+          <p className="text-secondary">Start by adding a new beneficiary</p>
+        </div>
+      )}
     </div>
   );
 }

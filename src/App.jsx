@@ -71,7 +71,7 @@ function App() {
         <Route path='/reports' element={<Report />} />
 
         <Route path='/add-worker' element={<Wadd />} />
-        <Route path='/update-worker' element={<Wupdate />} />
+        <Route path='/update-worker/:id' element={<Wupdate />} />
         <Route path='/child/:id' element={<Child />} />
         <Route path='/display-child' element={<DisplayChild />} />
         <Route path='/add-child' element={<ChildAdd />} />
@@ -94,7 +94,7 @@ function App() {
         <Route path='/admin-beneficiary' element={<WorkerBB />} />
         <Route path='/child-beneficiary' element={<ChildManagement/>}/>
         <Route path='/add-childbeneficiary' element={<ChildBAdd/>}/>
-        <Route path='/update-childbeneficiary' element={<ChildBupdate/>}/>
+        <Route path='/update-childbeneficiary/:id' element={<ChildBupdate/>}/>
 
 
 

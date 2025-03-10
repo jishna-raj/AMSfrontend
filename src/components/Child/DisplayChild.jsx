@@ -5,55 +5,124 @@ import { Link } from 'react-router-dom';
 import { deleteChildApi, getallchildApi } from '../../services/allapi';
 import { toast, ToastContainer } from 'react-toastify';
 
-
 function DisplayChild() {
-  const [children, setChildren] = useState([]); // State to store the list of children
-  const [loading, setLoading] = useState(true); // State to handle loading state
-  const [error, setError] = useState(null); // State to handle errors
+  const [children, setChildren] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [healthAlerts, setHealthAlerts] = useState([]);
 
   // Fetch all children when the component mounts
   useEffect(() => {
     const allChildren = async () => {
       try {
         const response = await getallchildApi();
-        /* console.log(response); */
-       /*  console.log(children); */
-        
-         // Call the API
         if (response && response.data.children) {
-          setChildren(response.data.children); // Update state with fetched data
+          console.log("Fetched Children Data:", response.data.children); // Log fetched data
+          setChildren(response.data.children);
         } else {
-          setError('No children found'); // Handle case where no data is returned
+          setError('No children found');
         }
       } catch (err) {
-        setError('Failed to fetch children'); // Handle API errors
+        setError('Failed to fetch children');
         console.error('Error fetching children:', err);
       } finally {
-        setLoading(false); // Set loading to false after the operation
+        setLoading(false);
       }
     };
-allChildren();
+    allChildren();
   }, []);
 
+  // Regenerate health alerts whenever `children` changes
+  useEffect(() => {
+    if (children.length > 0) {
+      generateHealthAlerts(children);
+    }
+  }, [children]); // Run this effect whenever `children` changes
 
+  const calculateBMI = (weight, height) => {
+    if (weight && height) {
+      const heightInMeters = height / 100; // Convert height from cm to meters
+      return (weight / (heightInMeters * heightInMeters)).toFixed(2);
+    }
+    return null;
+  };
 
-  // Display loading state
+  const generateHealthAlerts = (children) => {
+    const alerts = [];
+
+    console.log("Generating health alerts for children:", children); // Log children data
+
+    children.forEach(child => {
+      const { name, age, healthRecords, allergies } = child;
+
+      // Access the latest health record (first item in the array)
+      const latestHealthRecord = healthRecords?.[0];
+      const weight = latestHealthRecord?.weight; // Access weight from the latest health record
+      const height = latestHealthRecord?.height; // Access height from the latest health record
+
+      // Log weight and height for debugging
+      console.log(`Child: ${name}, Weight: ${weight}, Height: ${height}`);
+
+      // Example: Check if a child is due for a Polio booster shot
+      if (age === 5) {
+        alerts.push({
+          type: 'warning',
+          message: `${name} (Age: ${age}) is due for a Polio booster shot.`
+        });
+      }
+
+      // Calculate BMI and add alerts based on BMI categories
+      if (weight && height) {
+        const bmi = calculateBMI(weight, height);
+        console.log(`Child: ${name}, BMI: ${bmi}`); // Log BMI for debugging
+        if (bmi < 18.5) {
+          alerts.push({
+            type: 'danger',
+            message: `${name} (Age: ${age}) is underweight (BMI: ${bmi}). Please consult a nutritionist.`
+          });
+        } else if (bmi >= 25 && bmi < 30) {
+          alerts.push({
+            type: 'warning',
+            message: `${name} (Age: ${age}) is overweight (BMI: ${bmi}). Encourage physical activity.`
+          });
+        } else if (bmi >= 30) {
+          alerts.push({
+            type: 'danger',
+            message: `${name} (Age: ${age}) is obese (BMI: ${bmi}). Immediate medical attention is required.`
+          });
+        }
+      } else {
+        console.log(`Child: ${name}, Weight or Height is missing. Cannot calculate BMI.`);
+      }
+
+      // Check for severe allergies
+      if (allergies?.length > 0) {
+        alerts.push({
+          type: 'danger',
+          message: `${name} (Age: ${age}) has severe allergies: ${allergies.join(", ")}. Ensure proper precautions.`
+        });
+      }
+    });
+
+    console.log("Generated Health Alerts:", alerts); // Log generated alerts
+    setHealthAlerts(alerts);
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  // Display error state
   if (error) {
     return <div>{error}</div>;
   }
 
-
   const handleDeleteChild = async (id) => {
     try {
-      const response = await deleteChildApi(id)
+      const response = await deleteChildApi(id);
       if (response.status === 200) {
         toast.success('Child deleted successfully');
-        fetchChildren(); // Refresh the list of children
+        const updatedChildren = children.filter(child => child.id !== id);
+        setChildren(updatedChildren); // Update the `children` state
       } else {
         toast.error('Failed to delete child');
       }
@@ -127,12 +196,15 @@ allChildren();
         <div className="row mt-4 m-5">
           <div className="col-md-11">
             <h4>Health Alerts</h4>
-            <div className="alert alert-warning">
-              Rahul Sharma (Age: 5) is due for a Polio booster shot.
-            </div>
-            <div className="alert alert-danger">
-              Priya Patel (Age: 4) is underweight. Please monitor nutrition.
-            </div>
+            {healthAlerts.length > 0 ? (
+              healthAlerts.map((alert, index) => (
+                <div key={index} className={`alert alert-${alert.type}`}>
+                  {alert.message}
+                </div>
+              ))
+            ) : (
+              <div className="alert alert-info">No health alerts to display.</div>
+            )}
           </div>
           <div className="col-md-1"></div>
         </div>

@@ -9,7 +9,7 @@ function WorkerBB() {
     <div className="worker-bb-container">
       {/* Header */}
       <div className="header">
-        <h1>Beneficiary Management</h1>
+        <Link to={'/admin'} style={{textDecoration:"none"}}><h1>Beneficiary Management</h1></Link>
         
       </div>
 

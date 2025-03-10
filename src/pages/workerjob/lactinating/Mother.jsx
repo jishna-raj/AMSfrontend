@@ -159,8 +159,10 @@ function Mother() {
 
               {mother.lactationSupportDetails && (
                 <div className="notes p-3">
+                  <p className='fw-bold mb-3'>Registration Date:</p>
                   <label>Support Details</label>
                   <p>{mother.lactationSupportDetails}</p>
+                  
                 </div>
               )}
             </div>

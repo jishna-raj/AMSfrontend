@@ -1,41 +1,129 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './AddMother.css';
+import { addmotherApi } from '../../../services/allapi'; // Import the API function
+import { ToastContainer, toast } from 'react-toastify'; // Import toastify
+import 'react-toastify/dist/ReactToastify.css'; // Import toastify CSS
 
 function AddMother() {
-    // Hardcoded data for the form (default values)
-    const formData = {
-        _id: 'LM123',
-        name: 'Jane Doe',
-        type: 'lactatingMother',
-        dateOfBirth: '1990-05-14',
+    // State to manage form data
+    const [formData, setFormData] = useState({
+        id: '',
+        name: '',
+        dateOfBirth: '',
         gender: 'female',
-        address: '123 Main St, New York, NY 10001',
-        guardianName: 'John Doe',
-        guardianPhone: '123-456-7890',
-        bloodGroup: 'O+',
-        assignedWorkerId: 'W123',
-        currentStatus: 'Active',
-        lastDeliveryDate: '2024-01-15',
+        address: '',
+        guardianName: '',
+        guardianPhone: '',
+        bloodGroup: '',
+        assignedWorkerId: '',
+        lastDeliveryDate: '',
         breastfeedingStatus: 'exclusive',
-        nutritionalSupport: true,
-        lactationSupportDetails: 'Receiving weekly nutritional supplements.',
+        nutritionalSupport: false,
+        lactationSupportDetails: '',
+        currentStatus: 'Active'
+    });
+
+    // State to manage form errors
+    const [errors, setErrors] = useState({});
+
+    // Handle input changes
+    const handleInputChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData({
+            ...formData,
+            [name]: type === 'checkbox' ? checked : value
+        });
+    };
+
+    // Handle form submission
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // Validate form fields
+        const validationErrors = validateForm(formData);
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            toast.info('Please fill all the required fields.');
+            return;
+        }
+
+        try {
+            // Call the API to add the mother
+            const response = await addmotherApi(formData);
+            console.log(response);
+
+            if (response.status >= 200 && response.status < 300) {
+                toast.success('Lactating mother added successfully!');
+                // Reset form after successful submission
+                setFormData({
+                    id: '',
+                    name: '',
+                    dateOfBirth: '',
+                    gender: 'female',
+                    address: '',
+                    guardianName: '',
+                    guardianPhone: '',
+                    bloodGroup: '',
+                    assignedWorkerId: '',
+                    lastDeliveryDate: '',
+                    breastfeedingStatus: 'exclusive',
+                    nutritionalSupport: false,
+                    lactationSupportDetails: '',
+                    currentStatus: 'Active'
+                });
+                setErrors({});
+            } else {
+                toast.error(`Error: ${response.data.message}`);
+            }
+        } catch (error) {
+            console.error('Error adding lactating mother:', error);
+            toast.error('An error occurred while adding the lactating mother.');
+        }
+    };
+
+    // Validate form fields
+    const validateForm = (data) => {
+        const errors = {};
+        const requiredFields = [
+            'id', 'name', 'dateOfBirth', 'gender', 'address',
+            'guardianName', 'guardianPhone', 'bloodGroup',
+            'assignedWorkerId', 'lastDeliveryDate', 'breastfeedingStatus'
+        ];
+
+        requiredFields.forEach(field => {
+            if (!data[field]) {
+                errors[field] = `${field} is required`;
+            }
+        });
+
+        // Validate date formats
+        if (data.dateOfBirth && isNaN(new Date(data.dateOfBirth).getTime())) {
+            errors.dateOfBirth = 'Invalid date format for date of birth';
+        }
+
+        if (data.lastDeliveryDate && isNaN(new Date(data.lastDeliveryDate).getTime())) {
+            errors.lastDeliveryDate = 'Invalid date format for last delivery date';
+        }
+
+        return errors;
     };
 
     return (
         <div className="add-beneficiary-container">
             <h1 className="page-title">Add Lactating Mother Beneficiary</h1>
-            <form className="beneficiary-form">
+            <form className="beneficiary-form" onSubmit={handleSubmit}>
                 <div className="form-grid">
                     {/* ID */}
                     <div className="input-group">
                         <label className="form-label">ID</label>
                         <input
                             type="text"
-                            name="_id"
-                            defaultValue={formData._id}
+                            name="id"
+                            value={formData.id}
+                            onChange={handleInputChange}
                             className="form-input"
-                            
                         />
+                        {errors.id && <span className="error-message">{errors.id}</span>}
                     </div>
 
                     {/* Name */}
@@ -44,10 +132,11 @@ function AddMother() {
                         <input
                             type="text"
                             name="name"
-                            defaultValue={formData.name}
+                            value={formData.name}
+                            onChange={handleInputChange}
                             className="form-input"
-                            
                         />
+                        {errors.name && <span className="error-message">{errors.name}</span>}
                     </div>
 
                     {/* Date of Birth */}
@@ -56,10 +145,11 @@ function AddMother() {
                         <input
                             type="date"
                             name="dateOfBirth"
-                            defaultValue={formData.dateOfBirth}
+                            value={formData.dateOfBirth}
+                            onChange={handleInputChange}
                             className="form-input"
-                            
                         />
+                        {errors.dateOfBirth && <span className="error-message">{errors.dateOfBirth}</span>}
                     </div>
 
                     {/* Gender */}
@@ -67,9 +157,9 @@ function AddMother() {
                         <label className="form-label">Gender</label>
                         <select
                             name="gender"
-                            defaultValue={formData.gender}
+                            value={formData.gender}
+                            onChange={handleInputChange}
                             className="form-input form-select"
-                            
                         >
                             <option value="female">Female</option>
                             <option value="male">Male</option>
@@ -82,10 +172,11 @@ function AddMother() {
                         <input
                             type="text"
                             name="address"
-                            defaultValue={formData.address}
+                            value={formData.address}
+                            onChange={handleInputChange}
                             className="form-input"
-                            
                         />
+                        {errors.address && <span className="error-message">{errors.address}</span>}
                     </div>
 
                     {/* Guardian Name */}
@@ -94,10 +185,11 @@ function AddMother() {
                         <input
                             type="text"
                             name="guardianName"
-                            defaultValue={formData.guardianName}
+                            value={formData.guardianName}
+                            onChange={handleInputChange}
                             className="form-input"
-                            
                         />
+                        {errors.guardianName && <span className="error-message">{errors.guardianName}</span>}
                     </div>
 
                     {/* Guardian Phone */}
@@ -106,10 +198,11 @@ function AddMother() {
                         <input
                             type="text"
                             name="guardianPhone"
-                            defaultValue={formData.guardianPhone}
+                            value={formData.guardianPhone}
+                            onChange={handleInputChange}
                             className="form-input"
-                            
                         />
+                        {errors.guardianPhone && <span className="error-message">{errors.guardianPhone}</span>}
                     </div>
 
                     {/* Blood Group */}
@@ -118,10 +211,11 @@ function AddMother() {
                         <input
                             type="text"
                             name="bloodGroup"
-                            defaultValue={formData.bloodGroup}
+                            value={formData.bloodGroup}
+                            onChange={handleInputChange}
                             className="form-input"
-                            
                         />
+                        {errors.bloodGroup && <span className="error-message">{errors.bloodGroup}</span>}
                     </div>
 
                     {/* Assigned Worker ID */}
@@ -130,24 +224,11 @@ function AddMother() {
                         <input
                             type="text"
                             name="assignedWorkerId"
-                            defaultValue={formData.assignedWorkerId}
+                            value={formData.assignedWorkerId}
+                            onChange={handleInputChange}
                             className="form-input"
-                            
                         />
-                    </div>
-
-                    {/* Current Status */}
-                    <div className="input-group">
-                        <label className="form-label">Current Status</label>
-                        <select
-                            name="currentStatus"
-                            defaultValue={formData.currentStatus}
-                            className="form-input form-select"
-                            
-                        >
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
-                        </select>
+                        {errors.assignedWorkerId && <span className="error-message">{errors.assignedWorkerId}</span>}
                     </div>
 
                     {/* Last Delivery Date */}
@@ -156,10 +237,11 @@ function AddMother() {
                         <input
                             type="date"
                             name="lastDeliveryDate"
-                            defaultValue={formData.lastDeliveryDate}
+                            value={formData.lastDeliveryDate}
+                            onChange={handleInputChange}
                             className="form-input"
-                            
                         />
+                        {errors.lastDeliveryDate && <span className="error-message">{errors.lastDeliveryDate}</span>}
                     </div>
 
                     {/* Breastfeeding Status */}
@@ -167,9 +249,9 @@ function AddMother() {
                         <label className="form-label">Breastfeeding Status</label>
                         <select
                             name="breastfeedingStatus"
-                            defaultValue={formData.breastfeedingStatus}
+                            value={formData.breastfeedingStatus}
+                            onChange={handleInputChange}
                             className="form-input form-select"
-                            
                         >
                             <option value="exclusive">Exclusive</option>
                             <option value="partial">Partial</option>
@@ -184,9 +266,9 @@ function AddMother() {
                             <input
                                 type="checkbox"
                                 name="nutritionalSupport"
-                                defaultChecked={formData.nutritionalSupport}
+                                checked={formData.nutritionalSupport}
+                                onChange={handleInputChange}
                                 className="checkbox-input"
-                                
                             />
                             <span className="form-label">Receiving nutritional support</span>
                         </div>
@@ -197,9 +279,9 @@ function AddMother() {
                         <label className="form-label">Lactation Support Details</label>
                         <textarea
                             name="lactationSupportDetails"
-                            defaultValue={formData.lactationSupportDetails}
+                            value={formData.lactationSupportDetails}
+                            onChange={handleInputChange}
                             className="form-input form-textarea"
-                            
                         />
                     </div>
                 </div>
@@ -207,13 +289,26 @@ function AddMother() {
                 <button
                     type="submit"
                     className="submit-button"
-                    
                 >
                     Add Beneficiary
                 </button>
             </form>
+
+            {/* Toast Container */}
+<ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
         </div>
     );
-};
+}
 
 export default AddMother;
