@@ -64,8 +64,9 @@ function ChildManagement() {
         <div>
           <Link style={{textDecoration:"none",color:"green"}}  to={userRole === 'admin' ? '/admin' : '/worker'} ><h2 className="fw-bold">Child Beneficiary Management</h2></Link>
           <p className="text-muted">Manage and view all child beneficiary records</p>
+
         </div>
-        <Link  to={userRole === 'admin' ? '/admin' : '/worker'} 
+        <Link to={'/add-childbeneficiary'} 
                     className="text-decoration-none text-white">
           <FontAwesomeIcon icon={faPlus} className="me-2" />
           Add New
