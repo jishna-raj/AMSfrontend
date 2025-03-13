@@ -43,7 +43,10 @@ function Reg({ admin }) {
         response = await WorkerregisterApi({ ...baseData, workerId });
       }
 
-      if (response?.status === 200) {
+      console.log(response);
+      
+
+      if (response?.status >= 200 && response.status<300) {
         toast.success("Registration Successful");
         
         // Corrected navigation paths
@@ -181,7 +184,7 @@ function Reg({ admin }) {
             <p className="pt-3 text-center">
               Already a User? Click here to{" "}
               <Link
-                to={"/user-login"}
+                to={"/home"}
                 className="text-danger"
                 style={{ textDecoration: "none" }}
               >

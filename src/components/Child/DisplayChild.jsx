@@ -11,6 +11,8 @@ function DisplayChild() {
   const [error, setError] = useState(null);
   const [healthAlerts, setHealthAlerts] = useState([]);
 
+  const userRole = sessionStorage.getItem('userRole'); 
+
   // Fetch all children when the component mounts
   useEffect(() => {
     const allChildren = async () => {
@@ -139,7 +141,8 @@ function DisplayChild() {
           className="p-2 text-light d-flex justify-content-between align-items-center"
           style={{ backgroundImage: "linear-gradient(180deg, #083b14, #0a551a)" }}
         >
-          <Link to={'/admin'} style={{ textDecoration: 'none', color: 'white' }}>
+          <Link  to={userRole === 'admin' ? '/admin' : '/worker'} 
+                     style={{ textDecoration: 'none', color: 'white' }}>
             <h2 className="ms-3 fw-bold">Child Management</h2>
           </Link>
           <Link to={'/add-child'}>

@@ -3,6 +3,7 @@ import './AddMother.css';
 import { addmotherApi } from '../../../services/allapi'; // Import the API function
 import { ToastContainer, toast } from 'react-toastify'; // Import toastify
 import 'react-toastify/dist/ReactToastify.css'; // Import toastify CSS
+import { Link } from 'react-router-dom';
 
 function AddMother() {
     // State to manage form data
@@ -20,18 +21,59 @@ function AddMother() {
         breastfeedingStatus: 'exclusive',
         nutritionalSupport: false,
         lactationSupportDetails: '',
-        currentStatus: 'Active'
+        currentStatus: 'Active',
+        children: [] // Add children array
     });
 
     // State to manage form errors
     const [errors, setErrors] = useState({});
 
-    // Handle input changes
+    // Handle input changes for mother details
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData({
             ...formData,
             [name]: type === 'checkbox' ? checked : value
+        });
+    };
+
+    // Handle input changes for child details
+    const handleChildInputChange = (index, e) => {
+        const { name, value } = e.target;
+        const updatedChildren = [...formData.children];
+        updatedChildren[index] = {
+            ...updatedChildren[index],
+            [name]: value
+        };
+        setFormData({
+            ...formData,
+            children: updatedChildren
+        });
+    };
+
+    // Add a new child input field
+    const addChild = () => {
+        setFormData({
+            ...formData,
+            children: [
+                ...formData.children,
+                {
+                    name: '',
+                    dateOfBirth: '',
+                    gender: 'male',
+                    birthWeight: '',
+                    breastfeedingStatus: 'exclusive'
+                }
+            ]
+        });
+    };
+
+    // Remove a child input field
+    const removeChild = (index) => {
+        const updatedChildren = formData.children.filter((_, i) => i !== index);
+        setFormData({
+            ...formData,
+            children: updatedChildren
         });
     };
 
@@ -69,7 +111,8 @@ function AddMother() {
                     breastfeedingStatus: 'exclusive',
                     nutritionalSupport: false,
                     lactationSupportDetails: '',
-                    currentStatus: 'Active'
+                    currentStatus: 'Active',
+                    children: []
                 });
                 setErrors({});
             } else {
@@ -105,14 +148,28 @@ function AddMother() {
             errors.lastDeliveryDate = 'Invalid date format for last delivery date';
         }
 
+        // Validate child details
+        data.children.forEach((child, index) => {
+            if (!child.name) {
+                errors[`childName${index}`] = `Child ${index + 1} name is required`;
+            }
+            if (!child.dateOfBirth || isNaN(new Date(child.dateOfBirth).getTime())) {
+                errors[`childDateOfBirth${index}`] = `Child ${index + 1} date of birth is invalid`;
+            }
+            if (!child.birthWeight) {
+                errors[`childBirthWeight${index}`] = `Child ${index + 1} birth weight is required`;
+            }
+        });
+
         return errors;
     };
 
     return (
         <div className="add-beneficiary-container">
-            <h1 className="page-title">Add Lactating Mother Beneficiary</h1>
+            <Link to={'/lactating'} style={{textDecoration:'none'}}><h1 className="page-title">Add Lactating Mother Beneficiary</h1></Link>
             <form className="beneficiary-form" onSubmit={handleSubmit}>
                 <div className="form-grid">
+                    {/* Mother Details */}
                     {/* ID */}
                     <div className="input-group">
                         <label className="form-label">ID</label>
@@ -284,6 +341,81 @@ function AddMother() {
                             className="form-input form-textarea"
                         />
                     </div>
+
+                    {/* Child Details */}
+                    <div className="input-group">
+                        <label className="form-label">Children</label>
+                        {formData.children.map((child, index) => (
+                            <div key={index} className="child-input-group">
+                                <input
+                                    type="text"
+                                    name="name"
+                                    placeholder="Child Name"
+                                    value={child.name}
+                                    onChange={(e) => handleChildInputChange(index, e)}
+                                    className="form-input mt-3"
+                                />
+                                <input
+                                    type="date"
+                                    name="dateOfBirth"
+                                    placeholder="Date of Birth"
+                                    value={child.dateOfBirth}
+                                    onChange={(e) => handleChildInputChange(index, e)}
+                                    className="form-input mt-3"
+                                />
+                                <select
+                                    name="gender"
+                                    value={child.gender}
+                                    onChange={(e) => handleChildInputChange(index, e)}
+                                    className="form-input mt-3 form-select"
+                                >
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                                <input
+                                    type="number"
+                                    name="birthWeight"
+                                    placeholder="Birth Weight (kg)"
+                                    value={child.birthWeight}
+                                    onChange={(e) => handleChildInputChange(index, e)}
+                                    className="form-input mt-3"
+                                />
+                                <select
+                                    name="breastfeedingStatus"
+                                    value={child.breastfeedingStatus}
+                                    onChange={(e) => handleChildInputChange(index, e)}
+                                    className="form-input form-select mt-3"
+                                >
+                                    <option value="exclusive">Exclusive</option>
+                                    <option value="partial">Partial</option>
+                                    <option value="none">None</option>
+                                </select>
+                                <button
+                                    type="button"
+                                    className="btn btn-danger mb-3 mt-2"
+                                    onClick={() => removeChild(index)}
+                                >
+                                    Remove
+                                </button>
+                                {errors[`childName${index}`] && (
+                                    <span className="error-message">{errors[`childName${index}`]}</span>
+                                )}
+                                {errors[`childDateOfBirth${index}`] && (
+                                    <span className="error-message">{errors[`childDateOfBirth${index}`]}</span>
+                                )}
+                                {errors[`childBirthWeight${index}`] && (
+                                    <span className="error-message">{errors[`childBirthWeight${index}`]}</span>
+                                )}
+                            </div>
+                        ))}
+                        <button
+                            type="button"
+                            className="btn"
+                            onClick={addChild}
+                        >
+                            Add Child
+                        </button>
+                    </div>
                 </div>
 
                 <button
@@ -295,18 +427,18 @@ function AddMother() {
             </form>
 
             {/* Toast Container */}
-<ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
+            <ToastContainer
+                position="top-center"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </div>
     );
 }

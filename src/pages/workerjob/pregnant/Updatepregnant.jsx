@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { getApregnantApi, updatepregnantApi } from '../../../services/allapi';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate, useParams } from 'react-router-dom';
 
-function Updatepregnant() { 
+function Updatepregnant() {
+  const navigate = useNavigate();
+  const { id } = useParams(); // Extract the beneficiary ID from the URL
+
   const [beneficiary, setBeneficiary] = useState({
     name: '',
     dateOfBirth: '',
@@ -15,117 +22,71 @@ function Updatepregnant() {
     guardianPhone: '',
     bloodGroup: '',
     assignedWorkerId: '',
-    currentStatus: '',
+    currentStatus: 'Active',
     lastCheckupDate: '',
     lastVisitDate: '',
     nutritionStatus: {
       date: '',
-      status: '',
+      status: 'Normal',
     },
-    healthRecords: [
-      {
-        date: '',
-        weight: '',
-        bloodPressure: {
-          systolic: '',
-          diastolic: '',
-        },
-        fetalHeartRate: '',
-        notes: '',
-      },
-    ],
-    vaccinationDetails: [
-      {
-        vaccineName: '',
-        dateAdministered: '',
-        administeredBy: '',
-        notes: '',
-      },
-    ],
+    healthRecords: [],
+    vaccinationDetails: [],
+    document: '',
   });
 
-  const [healthRecords, setHealthRecords] = useState(beneficiary.healthRecords);
-  const [vaccinationDetails, setVaccinationDetails] = useState(beneficiary.vaccinationDetails);
+  const [healthRecords, setHealthRecords] = useState([]);
+  const [vaccinationDetails, setVaccinationDetails] = useState([]);
 
+  // Format date to 'yyyy-MM-dd' for input fields
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0]; // Extract 'yyyy-MM-dd' from ISO string
+  };
+
+  // Fetch beneficiary data when the component mounts
   useEffect(() => {
-    // Fetch the beneficiary data from the API or database
-    const beneficiaryData = {
-      // Replace with actual data
-      name: 'John Doe',
-      dateOfBirth: '1990-01-01',
-      gender: 'Male',
-      address: {
-        street: '123 Main St',
-        city: 'Anytown',
-        state: 'CA',
-        zipCode: '12345',
-      },
-      guardianName: 'Jane Doe',
-      guardianPhone: '123-456-7890',
-      bloodGroup: 'A+',
-      assignedWorkerId: '12345',
-      currentStatus: 'Active',
-      lastCheckupDate: '2022-01-01',
-      lastVisitDate: '2022-01-15',
-      nutritionStatus: {
-        date: '2022-01-01',
-        status: 'Normal',
-      },
-      healthRecords: [
-        {
-          date: '2022-01-01',
-          weight: '60',
-          bloodPressure: {
-            systolic: '120',
-            diastolic: '80',
-          },
-          fetalHeartRate: '140',
-          notes: 'Normal',
-        },
-      ],
-      vaccinationDetails: [
-        {
-          vaccineName: 'Flu Shot',
-          dateAdministered: '2022-01-01',
-          administeredBy: 'Dr. Smith',
-          notes: 'No reaction',
-        },
-      ],
+    const fetchBeneficiary = async () => {
+      try {
+        const response = await getApregnantApi(id); // Fetch beneficiary data by ID
+        if (response.data) {
+          const formattedData = {
+            ...response.data.data,
+            dateOfBirth: formatDateForInput(response.data.data.dateOfBirth),
+            lastCheckupDate: formatDateForInput(response.data.data.lastCheckupDate),
+            lastVisitDate: formatDateForInput(response.data.data.lastVisitDate),
+            nutritionStatus: {
+              ...response.data.data.nutritionStatus,
+              date: formatDateForInput(response.data.data.nutritionStatus.date),
+            },
+            healthRecords: response.data.data.healthRecords.map((record) => ({
+              ...record,
+              date: formatDateForInput(record.date),
+            })),
+            vaccinationDetails: response.data.data.vaccinationDetails.map((vaccine) => ({
+              ...vaccine,
+              dateAdministered: formatDateForInput(vaccine.dateAdministered),
+            })),
+          };
+          setBeneficiary(formattedData);
+          setHealthRecords(formattedData.healthRecords || []);
+          setVaccinationDetails(formattedData.vaccinationDetails || []);
+        }
+      } catch (error) {
+        console.error('Error fetching beneficiary data:', error);
+        toast.error('Failed to fetch beneficiary data');
+      }
     };
 
-    setBeneficiary(beneficiaryData);
-    setHealthRecords(beneficiaryData.healthRecords);
-    setVaccinationDetails(beneficiaryData.vaccinationDetails);
-  }, []);
+    fetchBeneficiary();
+  }, [id]);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
+  // Handle input changes for the form
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
 
-    if (name.startsWith('healthRecords')) {
-      const [field, index, subField, subSubField] = name.split('.');
-      const updatedHealthRecords = [...healthRecords];
-
-      if (subSubField) {
-        updatedHealthRecords[index][subField][subSubField] = value;
-      } else if (subField) {
-        updatedHealthRecords[index][subField] = value;
-      } else {
-        updatedHealthRecords[index][field] = value;
-      }
-
-      setHealthRecords(updatedHealthRecords);
-    } else if (name.startsWith('vaccinationDetails')) {
-      const [field, index, subField] = name.split('.');
-      const updatedVaccinationDetails = [...vaccinationDetails];
-
-      if (subField) {
-        updatedVaccinationDetails[index][subField] = value;
-      } else {
-        updatedVaccinationDetails[index][field] = value;
-      }
-
-      setVaccinationDetails(updatedVaccinationDetails);
-    } else if (name.includes('.')) {
+    // Handle nested fields (e.g., address.street, nutritionStatus.date)
+    if (name.includes('.')) {
       const [parent, child] = name.split('.');
       setBeneficiary((prev) => ({
         ...prev,
@@ -142,42 +103,96 @@ function Updatepregnant() {
     }
   };
 
+  // Handle health record input changes
+  const handleHealthRecordChange = (index, e) => {
+    const { name, value } = e.target;
+
+    // Create a copy of the healthRecords array
+    const updatedRecords = [...healthRecords];
+
+    // Ensure the index is valid
+    if (index < 0 || index >= updatedRecords.length) {
+      console.error('Invalid index:', index);
+      return;
+    }
+
+    // Handle nested fields (e.g., bloodPressure.systolic)
+    if (name.includes('.')) {
+      const [parent, child] = name.split('.');
+      if (!updatedRecords[index][parent]) {
+        updatedRecords[index][parent] = {}; // Initialize nested object if it doesn't exist
+      }
+      updatedRecords[index][parent][child] = value;
+    } else {
+      updatedRecords[index][name] = value;
+    }
+
+    // Update the state
+    setHealthRecords(updatedRecords);
+  };
+
+  // Handle vaccination detail input changes
+  const handleVaccinationDetailChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedVaccines = [...vaccinationDetails];
+    updatedVaccines[index][name] = value;
+    setVaccinationDetails(updatedVaccines);
+  };
+
+  // Add a new health record
   const addHealthRecord = () => {
-    setHealthRecords([
-      ...healthRecords,
-      {
-        date: '',
-        weight: '',
-        bloodPressure: {
-          systolic: '',
-          diastolic: '',
-        },
-        fetalHeartRate: '',
-        notes: '',
-      },
-    ]);
-  };
-
-  const addVaccinationDetail = () => {
-    setVaccinationDetails([
-      ...vaccinationDetails,
-      {
-        vaccineName: '',
-        dateAdministered: '',
-        administeredBy: '',
-        notes: '',
-      },
-    ]);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const updatedBeneficiary = {
-      ...beneficiary,
-      healthRecords,
-      vaccinationDetails,
+    const newRecord = {
+      date: '',
+      weight: 0,
+      bloodPressure: { systolic: 0, diastolic: 0 }, // Ensure nested object is initialized
+      fetalHeartRate: 0,
+      notes: '',
     };
-    console.log(updatedBeneficiary);
+    setHealthRecords((prev) => [...prev, newRecord]);
+    console.log('Added new health record:', newRecord); // Debugging
+  };
+
+  // Add a new vaccination detail
+  const addVaccinationDetail = () => {
+    const newVaccine = {
+      vaccineName: '',
+      dateAdministered: '',
+      administeredBy: '',
+      notes: '',
+    };
+    setVaccinationDetails((prev) => [...prev, newVaccine]);
+    console.log('Added new vaccination detail:', newVaccine); // Debugging
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      // Combine the updated data
+      const updatedBeneficiary = {
+        ...beneficiary,
+        healthRecords,
+        vaccinationDetails,
+      };
+
+      // Send the updated data to the backend
+      const response = await updatepregnantApi(id, updatedBeneficiary);
+
+      console.log('API Response:', response); // Debugging
+
+      if (response.status >= 200 && response.status < 300) {
+        toast.success('Beneficiary updated successfully!');
+        setTimeout(() => {
+          navigate('/pregnant');
+        }, 2000);
+      } else {
+        toast.error('Failed to update beneficiary.');
+      }
+    } catch (error) {
+      console.error('Error updating beneficiary:', error);
+      toast.error('An error occurred while updating the beneficiary.');
+    }
   };
 
   return (
@@ -297,27 +312,62 @@ function Updatepregnant() {
             <div key={index} className="health-record">
               <label>
                 Date:
-                <input type="date" name={`healthRecords.${index}.date`} value={record.date} onChange={handleInputChange} required />
+                <input
+                  type="date"
+                  name={`healthRecords.${index}.date`}
+                  value={record.date}
+                  onChange={(e) => handleHealthRecordChange(index, e)}
+                  required
+                />
               </label>
               <label>
                 Weight (kg):
-                <input type="number" name={`healthRecords.${index}.weight`} value={record.weight} onChange={handleInputChange} required />
+                <input
+                  type="number"
+                  name={`healthRecords.${index}.weight`}
+                  value={record.weight}
+                  onChange={(e) => handleHealthRecordChange(index, e)}
+                  required
+                />
               </label>
               <label>
                 Blood Pressure (Systolic):
-                <input type="number" name={`healthRecords.${index}.bloodPressure.systolic`} value={record.bloodPressure.systolic} onChange={handleInputChange} required />
+                <input
+                  type="number"
+                  name={`healthRecords.${index}.bloodPressure.systolic`}
+                  value={record.bloodPressure.systolic}
+                  onChange={(e) => handleHealthRecordChange(index, e)}
+                  required
+                />
               </label>
               <label>
                 Blood Pressure (Diastolic):
-                <input type="number" name={`healthRecords.${index}.bloodPressure.diastolic`} value={record.bloodPressure.diastolic} onChange={handleInputChange} required />
+                <input
+                  type="number"
+                  name={`healthRecords.${index}.bloodPressure.diastolic`}
+                  value={record.bloodPressure.diastolic}
+                  onChange={(e) => handleHealthRecordChange(index, e)}
+                  required
+                />
               </label>
               <label>
                 Fetal Heart Rate (bpm):
-                <input type="number" name={`healthRecords.${index}.fetalHeartRate`} value={record.fetalHeartRate} onChange={handleInputChange} required />
+                <input
+                  type="number"
+                  name={`healthRecords.${index}.fetalHeartRate`}
+                  value={record.fetalHeartRate}
+                  onChange={(e) => handleHealthRecordChange(index, e)}
+                  required
+                />
               </label>
               <label>
                 Notes:
-                <textarea name={`healthRecords.${index}.notes`} value={record.notes} onChange={handleInputChange} rows="3" />
+                <textarea
+                  name={`healthRecords.${index}.notes`}
+                  value={record.notes}
+                  onChange={(e) => handleHealthRecordChange(index, e)}
+                  rows="3"
+                />
               </label>
             </div>
           ))}
@@ -333,19 +383,42 @@ function Updatepregnant() {
             <div key={index} className="vaccination-detail">
               <label>
                 Vaccine Name:
-                <input type="text" name={`vaccinationDetails.${index}.vaccineName`} value={vaccine.vaccineName} onChange={handleInputChange} required />
+                <input
+                  type="text"
+                  name={`vaccinationDetails.${index}.vaccineName`}
+                  value={vaccine.vaccineName}
+                  onChange={(e) => handleVaccinationDetailChange(index, e)}
+                  required
+                />
               </label>
               <label>
                 Date Administered:
-                <input type="date" name={`vaccinationDetails.${index}.dateAdministered`} value={vaccine.dateAdministered} onChange={handleInputChange} required />
+                <input
+                  type="date"
+                  name={`vaccinationDetails.${index}.dateAdministered`}
+                  value={vaccine.dateAdministered}
+                  onChange={(e) => handleVaccinationDetailChange(index, e)}
+                  required
+                />
               </label>
               <label>
                 Administered By:
-                <input type="text" name={`vaccinationDetails.${index}.administeredBy`} value={vaccine.administeredBy} onChange={handleInputChange} required />
+                <input
+                  type="text"
+                  name={`vaccinationDetails.${index}.administeredBy`}
+                  value={vaccine.administeredBy}
+                  onChange={(e) => handleVaccinationDetailChange(index, e)}
+                  required
+                />
               </label>
               <label>
                 Notes:
-                <textarea name={`vaccinationDetails.${index}.notes`} value={vaccine.notes} onChange={handleInputChange} rows="3" />
+                <textarea
+                  name={`vaccinationDetails.${index}.notes`}
+                  value={vaccine.notes}
+                  onChange={(e) => handleVaccinationDetailChange(index, e)}
+                  rows="3"
+                />
               </label>
             </div>
           ))}
@@ -355,10 +428,13 @@ function Updatepregnant() {
         </div>
 
         {/* Submit Button */}
-        <button type="submit" className="submit-button">Update Beneficiary</button>
+        <button type="submit" className="submit-button">
+          Update Beneficiary
+        </button>
       </form>
+      <ToastContainer autoClose={2000} theme="colored" position="top-center" />
     </div>
   );
-};
+}
 
 export default Updatepregnant;

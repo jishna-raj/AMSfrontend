@@ -9,7 +9,7 @@ function Footer() {
       <footer className="bg-dark text-white py-5">
         <Container style={{backgroundColor:"transparent",boxShadow:"0px 0px 0px"}}>
           <Row>
-            <Col md={6}>
+            <Col md={5}>
               <div className="text-justify">
                 <div className='d-flex justify-content-start ms-1'>
                   <img src={logo} height={"50px"} width={"60px"} alt="Logo" />

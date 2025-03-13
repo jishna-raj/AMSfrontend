@@ -387,8 +387,8 @@ function ChildBAdd() {
                 <input
                   type="text"
                   className="form-input"
-                  name="healthRecords.recentIllnesses"
-                  value={childBeneficiary.healthRecords.recentIllnesses}
+                  name="healthRecords.illnesses"
+                  value={childBeneficiary.healthRecords.illnesses}
                   onChange={handleChange}
                 />
               </div>

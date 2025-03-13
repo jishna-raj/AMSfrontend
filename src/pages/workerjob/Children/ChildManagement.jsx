@@ -11,6 +11,8 @@ function ChildManagement() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const userRole = sessionStorage.getItem('userRole'); 
+
   useEffect(() => {
     const fetchChildBeneficiaries = async () => {
       try {
@@ -60,10 +62,11 @@ function ChildManagement() {
     <div className="child-beneficiary-container p-5 mt-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h2 className="fw-bold">Child Beneficiary Management</h2>
+          <Link style={{textDecoration:"none",color:"green"}}  to={userRole === 'admin' ? '/admin' : '/worker'} ><h2 className="fw-bold">Child Beneficiary Management</h2></Link>
           <p className="text-muted">Manage and view all child beneficiary records</p>
         </div>
-        <Link to="/add-childbeneficiary" className="btn btn-primary">
+        <Link  to={userRole === 'admin' ? '/admin' : '/worker'} 
+                    className="text-decoration-none text-white">
           <FontAwesomeIcon icon={faPlus} className="me-2" />
           Add New
         </Link>

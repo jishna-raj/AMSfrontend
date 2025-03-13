@@ -1,165 +1,161 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Pregnant.css'; // Import the CSS file
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
-
-
+import { Link, useNavigate } from 'react-router-dom';
+import { getAllpregnantApi, deletepregnantApi } from '../../../services/allapi'; // Import delete API
+import { serverUrl } from '../../../services/serverurl';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Pregnant() {
+    const [pregnantBeneficiaries, setPregnantBeneficiaries] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    const userRole = sessionStorage.getItem('userRole'); 
+
+    // Fetch all pregnant beneficiaries when the component mounts
+    useEffect(() => {
+        fetchPregnantBeneficiaries();
+    }, []);
+
+    const fetchPregnantBeneficiaries = async () => {
+        try {
+            const response = await getAllpregnantApi();
+            console.log(response.data.data);
+
+            if (response.data) {
+                setPregnantBeneficiaries(response.data.data);
+            } else {
+                setError('No data found');
+            }
+        } catch (err) {
+            setError('Failed to fetch data');
+            console.error('Error fetching pregnant beneficiaries:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Handle delete beneficiary
+    const handleDelete = async (id) => {
+        try {
+            const response = await deletepregnantApi(id); // Call the delete API
+
+            if (response.status >= 200 && response.status < 300) {
+                toast.success('Beneficiary deleted successfully!');
+                // Remove the deleted beneficiary from the list
+                setPregnantBeneficiaries((prev) =>
+                    prev.filter((beneficiary) => beneficiary._id !== id)
+                );
+            } else {
+                toast.error('Failed to delete beneficiary.');
+            }
+        } catch (error) {
+            console.error('Error deleting beneficiary:', error);
+            toast.error('An error occurred while deleting the beneficiary.');
+        }
+    };
+
+    // Render loading state
+    if (loading) {
+        return <div className="text-center mt-5">Loading...</div>;
+    }
+
+    // Render error state
+    if (error) {
+        return <div className="text-center mt-5 text-danger">{error}</div>;
+    }
+
     return (
         <div className="container5">
-           <div className=" text-light d-flex justify-content-between align-items-center mb-5 w-100" style={{backgroundColor:"green"}}>
-                <h1 className="title animate-fade-in">Pregnant Beneficiaries</h1>
+            <div className="text-light d-flex justify-content-between align-items-center mb-5 w-100" style={{ backgroundColor: "green" }}>
+                <Link to={userRole=='admin'?'/admin':'/worker'} style={{textDecoration:"none"}}><h1 className="title animate-fade-in">Pregnant Beneficiaries</h1></Link>
                 <button className="mb-4 btn mt-3" style={{ marginLeft: '80px' }}>
                     <Link to={"/add-pregnant"}><FontAwesomeIcon icon={faPlus} beat style={{ color: "white" }} /></Link>
                 </button>
-    
-           </div>
-            {/* Row 1 */}
-           <div className='container4'>
-                <div className="row animate-fade-in-up">
-                    {/* Card 1 */}
-                    <div className="card">
-                        <h2>Emily Johnson</h2>
-                        <p><strong>DOB:</strong> 1990-05-14</p>
-                        <p><strong>Address:</strong> 123 Main St, New York, NY 10001</p>
-                        <p><strong>Guardian:</strong> John Johnson (123-456-7890)</p>
-                        <p><strong>Blood Group:</strong> O+</p>
-                        <p><strong>Worker ID:</strong> W123</p>
-                        <p className="status active"><strong>Status:</strong> Active</p>
-                        <p><strong>Last Checkup:</strong> 2024-02-15</p>
-                        <p><strong>Last Visit:</strong> 2024-03-01</p>
-                        <p className="nutrition-status normal"><strong>Nutrition Status:</strong> Normal (on 2024-02-20)</p>
-                        <div className="health-records">
-                            <h3>Health Records</h3>
-                            <p>2024-02-10: 68kg, BP 120/80, FHR 140 bpm</p>
-                            <p>Notes: All normal</p>
-                            <p>Document</p>
+            </div>
+
+            {/* Render cards dynamically */}
+            <div className="container4" style={{ marginLeft: "150px" }}>
+                <div className="row w-100 animate-fade-in-up">
+                    {pregnantBeneficiaries.map((beneficiary) => (
+                        <div key={beneficiary._id} className="col-md-5">
+                            <div className='card shadow p-3'>
+                                <h2>{beneficiary.name}</h2>
+                                <p><strong>DOB:</strong> {new Date(beneficiary.dateOfBirth).toLocaleDateString()}</p>
+                                <p><strong>Address:</strong> {`${beneficiary.address.street}, ${beneficiary.address.city}, ${beneficiary.address.state} ${beneficiary.address.zipCode}`}</p>
+                                <p><strong>Guardian:</strong> {beneficiary.guardianName} ({beneficiary.guardianPhone})</p>
+                                <p><strong>Blood Group:</strong> {beneficiary.bloodGroup}</p>
+                                <p><strong>Worker ID:</strong> {beneficiary.assignedWorkerId}</p>
+                                <p className={`status ${beneficiary.currentStatus.toLowerCase()}`}>
+                                    <strong>Status:</strong> {beneficiary.currentStatus}
+                                </p>
+                                <p><strong>Last Checkup:</strong> {new Date(beneficiary.lastCheckupDate).toLocaleDateString()}</p>
+                                <p><strong>Last Visit:</strong> {beneficiary.lastVisitDate ? new Date(beneficiary.lastVisitDate).toLocaleDateString() : 'N/A'}</p>
+                                <p className={`nutrition-status ${beneficiary.nutritionStatus.status.toLowerCase()}`}>
+                                    <strong>Nutrition Status:</strong> {beneficiary.nutritionStatus.status} (on {new Date(beneficiary.nutritionStatus.date).toLocaleDateString()})
+                                </p>
+
+                                {/* Health Records */}
+                                <div className="health-records">
+                                    <h3>Health Records</h3>
+                                    {beneficiary.healthRecords.map((record, index) => (
+                                        <div key={index}>
+                                            <p>{new Date(record.date).toLocaleDateString()}: <br />weight: {record.weight}kg, BP {record.bloodPressure.systolic}/{record.bloodPressure.diastolic}, FHR {record.fetalHeartRate} bpm</p>
+                                            <p>Notes: {record.notes}</p>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Vaccination Details */}
+                                <div className="vaccination-details">
+                                    <h3>Vaccination Details</h3>
+                                    {beneficiary.vaccinationDetails.map((vaccine, index) => (
+                                        <div key={index} className='mb-2'>
+                                            <p>{vaccine.vaccineName} - {new Date(vaccine.dateAdministered).toLocaleDateString()}, by {vaccine.administeredBy}</p>
+                                            <p>Notes: {vaccine.notes}</p>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Document Image */}
+                                <div className="document-image">
+                                    <h3 style={{ color: '#28104b' }} className='ms-4'>Document</h3>
+                                    {beneficiary.document ? (
+                                        <img
+                                            src={`${serverUrl}/uploads/${beneficiary.document}`} // Adjust the path if necessary
+                                            alt="Document"
+                                            style={{ width: '300px', height: '300px', marginTop: '10px', marginBottom: '10px', marginLeft: '25px' }}
+                                        />
+                                    ) : (
+                                        <p>No document uploaded</p>
+                                    )}
+                                </div>
+
+                                {/* Card Footer */}
+                                <div className="card-footer">
+                                    <button className="btn btn-sm">
+                                        <Link to={`/update-pregnant/${beneficiary._id}`}><FontAwesomeIcon icon={faPenToSquare} style={{ color: "#19629a" }} /></Link>
+                                    </button>
+                                    <button
+                                        className="btn btn-sm ms-3"
+                                        onClick={() => handleDelete(beneficiary._id)} // Add delete handler
+                                    >
+                                        <FontAwesomeIcon icon={faTrash} style={{ color: 'red' }} />
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div className="vaccination-details">
-                            <h3>Vaccination Details</h3>
-                            <p>Tetanus - 2024-01-15, by Dr. Smith</p>
-                            <p>Notes: No side effects</p>
-                        </div>
-                        <div className="card-footer">
-                            <button className="btn btn-sm">
-                                <Link to={'/update-pregnant'}><FontAwesomeIcon icon={faPenToSquare} style={{ color: "#19629a" }} /></Link>
-                            </button>
-                            <button className="btn btn-sm ms-3">
-                                <FontAwesomeIcon icon={faTrash} style={{ color: 'red' }} />
-                            </button>
-                        </div>
-                    </div>
-    
-                    {/* Card 2 */}
-                    <div className="card">
-                        <h2>Sophia Martinez</h2>
-                        <p><strong>DOB:</strong> 1992-08-22</p>
-                        <p><strong>Address:</strong> 456 Oak St, Los Angeles, CA 90001</p>
-                        <p><strong>Guardian:</strong> Robert Martinez (987-654-3210)</p>
-                        <p><strong>Blood Group:</strong> A-</p>
-                        <p><strong>Worker ID:</strong> W456</p>
-                        <p className="status inactive"><strong>Status:</strong> Inactive</p>
-                        <p><strong>Last Checkup:</strong> 2024-01-10</p>
-                        <p><strong>Last Visit:</strong> 2024-02-25</p>
-                        <p className="nutrition-status underweight"><strong>Nutrition Status:</strong> Underweight (on 2024-02-18)</p>
-                        <div className="health-records">
-                            <h3>Health Records</h3>
-                            <p>2024-01-05: 55kg, BP 110/70, FHR 135 bpm</p>
-                            <p>Notes: Slightly underweight, advised better nutrition</p>
-                        </div>
-                        <div className="vaccination-details">
-                            <h3>Vaccination Details</h3>
-                            <p>Flu Shot - 2023-12-10, by Dr. Lee</p>
-                            <p>Notes: Recommended annual dose</p>
-                        </div>
-    
-                        <div className="card-footer">
-                        <button className="btn btn-sm">
-                            <Link to={'/update-pregnant'}><FontAwesomeIcon icon={faPenToSquare} style={{ color: "#19629a" }} /></Link>
-                        </button>
-                        <button className="btn btn-sm ms-3">
-                            <FontAwesomeIcon icon={faTrash} style={{ color: 'red' }} />
-                        </button>
-                    </div>
-                    </div>
-                  
+                    ))}
                 </div>
-    
-                {/* Row 2 */}
-                <div className="row animate-fade-in-up">
-                    {/* Card 3 */}
-                    <div className="card">
-                        <h2>Olivia Brown</h2>
-                        <p><strong>DOB:</strong> 1988-11-30</p>
-                        <p><strong>Address:</strong> 789 Pine St, Chicago, IL 60601</p>
-                        <p><strong>Guardian:</strong> Michael Brown (555-123-4567)</p>
-                        <p><strong>Blood Group:</strong> B+</p>
-                        <p><strong>Worker ID:</strong> W789</p>
-                        <p className="status active"><strong>Status:</strong> Active</p>
-                        <p><strong>Last Checkup:</strong> 2024-03-10</p>
-                        <p><strong>Last Visit:</strong> 2024-03-25</p>
-                        <p className="nutrition-status normal"><strong>Nutrition Status:</strong> Normal (on 2024-03-20)</p>
-                        <div className="health-records">
-                            <h3>Health Records</h3>
-                            <p>2024-03-05: 70kg, BP 115/75, FHR 145 bpm</p>
-                            <p>Notes: Healthy pregnancy</p>
-                        </div>
-                        <div className="vaccination-details">
-                            <h3>Vaccination Details</h3>
-                            <p>Whooping Cough - 2024-02-15, by Dr. Adams</p>
-                            <p>Notes: No adverse reactions</p>
-                        </div>
-                        <div className="card-footer">
-                            <button className="btn btn-sm">
-                                <Link to={'/update-pregnant'}><FontAwesomeIcon icon={faPenToSquare} style={{ color: "#19629a" }} /></Link>
-                            </button>
-                            <button className="btn btn-sm ms-3">
-                                <FontAwesomeIcon icon={faTrash} style={{ color: 'red' }} />
-                            </button>
-                        </div>
-                    </div>
-    
-                    {/* Card 4 */}
-                    <div className="card">
-                        <h2>Ava Davis</h2>
-                        <p><strong>DOB:</strong> 1995-04-18</p>
-                        <p><strong>Address:</strong> 321 Elm St, Houston, TX 77001</p>
-                        <p><strong>Guardian:</strong> James Davis (333-444-5555)</p>
-                        <p><strong>Blood Group:</strong> AB-</p>
-                        <p><strong>Worker ID:</strong> W321</p>
-                        <p className="status inactive"><strong>Status:</strong> Inactive</p>
-                        <p><strong>Last Checkup:</strong> 2024-02-20</p>
-                        <p><strong>Last Visit:</strong> 2024-03-05</p>
-                        <p className="nutrition-status underweight"><strong>Nutrition Status:</strong> Underweight (on 2024-03-01)</p>
-                        <div className="health-records">
-                            <h3>Health Records</h3>
-                            <p>2024-02-15: 60kg, BP 105/65, FHR 130 bpm</p>
-                            <p>Notes: Needs nutritional supplements</p>
-                        </div>
-                        <div className="vaccination-details">
-                            <h3>Vaccination Details</h3>
-                            <p>Hepatitis B - 2024-01-20, by Dr. Wilson</p>
-                            <p>Notes: Completed first dose</p>
-                        </div>
-    
-                        <div className="card-footer">
-                            <button className="btn btn-sm">
-                                <Link to={'/update-pregnant'}><FontAwesomeIcon icon={faPenToSquare} style={{ color: "#19629a" }} /></Link>
-                            </button>
-                            <button className="btn btn-sm ms-3">
-                                <FontAwesomeIcon icon={faTrash} style={{ color: 'red' }} />
-                            </button>
-                        </div>
-                    </div>
-    
-    
-                </div>
-           </div>
+            </div>
+
+            {/* Toast Container for Notifications */}
+            <ToastContainer autoClose={2000} theme="colored" position="top-center" />
         </div>
-
-
     );
 }
 

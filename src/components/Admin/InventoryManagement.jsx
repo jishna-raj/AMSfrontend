@@ -6,8 +6,8 @@ import IOut from '../Inventory/IOut';
 import IAdd from '../Inventory/IAdd';
 import { Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
-import { getAllinventoryApi, deleteinventoryApi } from '../../services/allapi'; // Import delete API
-import Spinner from 'react-bootstrap/Spinner'; // For loading spinner
+import { getAllinventoryApi, deleteinventoryApi } from '../../services/allapi';
+import Spinner from 'react-bootstrap/Spinner';
 
 function InventoryManagement() {
     const [inventory, setInventory] = useState([]);
@@ -15,20 +15,18 @@ function InventoryManagement() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [filteredTransactions, setFilteredTransactions] = useState([]);
-    
-  const [deleteStatus,setDeleteStatus] = useState(false)
+    const [deleteStatus, setDeleteStatus] = useState(false);
 
-    // Fetch inventory and process transactions
+    // Retrieve user role from sessionStorage
+    const userRole = sessionStorage.getItem('userRole'); // Assuming the role is stored as 'admin' or 'worker'
+
     useEffect(() => {
         const fetchInventory = async () => {
             try {
                 const response = await getAllinventoryApi();
                 if (response.data && Array.isArray(response.data)) {
                     setInventory(response.data);
-                    console.log(response.data);
                     
-
-                    // Process all transactions
                     const transactions = response.data.flatMap(item => 
                         item.transactions?.map(t => ({
                             ...t,
@@ -48,9 +46,8 @@ function InventoryManagement() {
             }
         };
         fetchInventory();
-    }, []);
+    }, [deleteStatus]);
 
-    // Handle item update success
     const handleUpdateSuccess = (updatedItem) => {
         setInventory(prev => prev.map(item => 
             item._id === updatedItem._id ? updatedItem : item
@@ -74,20 +71,13 @@ function InventoryManagement() {
         toast.success('Item updated successfully!');
     };
 
-    // Handle item deletion
     const handleDeleteItem = async (id) => {
-        
         try {
             const response = await deleteinventoryApi(id);
-
-            console.log(response);
-            
-            if (response.status==200) {
+            if (response.status === 200) {
                 toast.success(`${response.data.deletedItem.itemName} deleted successfully`);
-                const updatedinventory = inventory.filter(inventory=>inventory._id !== id) 
-                setInventory(updatedinventory)
-
-                setDeleteStatus(true)
+                setInventory(prev => prev.filter(item => item._id !== id));
+                setDeleteStatus(true);
             } else {
                 toast.error(response.message || "Failed to delete item");
             }
@@ -97,47 +87,41 @@ function InventoryManagement() {
         }
     };
 
-    // Get low stock items
     const getLowStockItems = () => {
         return inventory.filter(item => 
             item.quantity < item.minimumThreshold
         );
     };
 
-    // Format date
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-GB', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        try {
+            const date = new Date(dateString);
+            return isNaN(date) ? 'Invalid Date' : date.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } catch (e) {
+            return 'Invalid Date';
+        }
     };
 
-    // Filter transactions that are less than 10 days old
-    const filterTransactions = (transactions) => {
-        const tenDaysAgo = new Date();
-        tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
-
-        return transactions.filter(transaction => {
-            const transactionDate = new Date(transaction.date);
-            return transactionDate > tenDaysAgo;
-        });
-    };
-
-    // Update filtered transactions whenever allTransactions changes
     useEffect(() => {
+        const filterTransactions = (transactions) => {
+            const tenDaysAgo = new Date();
+            tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+            return transactions.filter(transaction => {
+                const transactionDate = new Date(transaction.date);
+                return transactionDate > tenDaysAgo;
+            });
+        };
+
         const filtered = filterTransactions(allTransactions);
-        setFilteredTransactions(filtered.slice(0, 10)); // Keep max 10
+        setFilteredTransactions(filtered.slice(0, 10));
     }, [allTransactions]);
-
-
-    useEffect(()=>{
-        setDeleteStatus(false)
-    },[deleteStatus,inventory])
 
     if (loading) return (
         <div className="text-center mt-5">
@@ -152,13 +136,16 @@ function InventoryManagement() {
     return (
         <>
             <div className="invent p-2 text-light d-flex justify-content-between align-items-center">
-                <Link to="/admin" className="text-decoration-none text-white">
+                {/* Role-based navigation */}
+                <Link 
+                    to={userRole === 'admin' ? '/admin' : '/worker'} 
+                    className="text-decoration-none text-white"
+                >
                     <h2 className="ms-3 fw-bold">Inventory Management</h2>
                 </Link>
                 <IAdd onAddItem={(newItem) => setInventory(prev => [...prev, newItem])} />
             </div>
 
-            {/* Low Stock Alerts Section */}
             <div className="row mt-4 m-5">
                 <div className="col-md-12">
                     <h4 className="mb-3">Low Stock Alerts</h4>
@@ -186,7 +173,6 @@ function InventoryManagement() {
                 </div>
             </div>
 
-            {/* Inventory Items */}
             <div className="row ms-5 mt-4">
                 {inventory.map((item) => (
                     <div className="col-md-3 ms-3 mt-4" key={item._id}>
@@ -218,8 +204,8 @@ function InventoryManagement() {
                                     {formatDate(item.expiryDate)}
                                 </div>
                                 <div className="mb-2">
-                                    <span className="fw-medium">Last Updated: </span>
-                                    {formatDate(item.updatedAt)}
+                                    <span className="fw-medium">Last Restocked: </span>
+                                    {formatDate(item.updatedAt || item.lastRestocked)}
                                 </div>
                             </div>
                             <div className="card-footer bg-white d-flex justify-content-between">
@@ -237,7 +223,6 @@ function InventoryManagement() {
                 ))}
             </div>
 
-            {/* Transactions Section */}
             <div className="row mt-4 m-5">
                 <div className="col-md-12">
                     <h4 className="mb-3">Recent Transactions (Last 10 Days)</h4>

@@ -60,7 +60,7 @@ function Home() {
                 <p>Staff Members</p>
               </div>
             </Col>
-            <Col md={3} sm={6} className="mb-4">
+            <Col md={2} sm={6} className="mb-4">
               <div className="stat-item " style={{color:"rgb(6, 59, 6)"}}>
                 <h2 className="display-6 fw-bold">98%</h2>
                 <p>Satisfaction Rate</p>
@@ -70,10 +70,10 @@ function Home() {
         </Container>
       </div>
 
-      <Container className="features-section p-4" style={{backgroundColor:"transparent",boxShadow:"0px 0px 0px"}}>
+      <div className="features-section p-4" style={{backgroundColor:"transparent",boxShadow:"0px 0px 0px"}}>
         <h2 className="text-center mb-5">Key Features</h2>
-        <Row className='w-100'>
-          <Col lg={4} md={6} className="mb-4">
+        <div className='row w-100' style={{marginLeft:"120px"}}>
+          <Col lg={3} md={6} className="mb-4">
             <Card className="h-100 feature-card">
               <Card.Body>
                 <Users className="feature-icon mb-3" />
@@ -84,7 +84,7 @@ function Home() {
               </Card.Body>
             </Card>
           </Col>
-          <Col lg={4} md={6} className="mb-4">
+          <Col lg={3} md={6} className="mb-4">
             <Card className="h-100 feature-card">
               <Card.Body>
                 <Apple className="feature-icon mb-3" />
@@ -95,7 +95,7 @@ function Home() {
               </Card.Body>
             </Card>
           </Col>
-          <Col lg={4} md={6} className="mb-4">
+          <Col lg={3} md={6} className="mb-4">
             <Card className="h-100 feature-card">
               <Card.Body>
                 <Activity className="feature-icon mb-3" />
@@ -107,7 +107,7 @@ function Home() {
             </Card>
           </Col>
 
-          <Col lg={4} md={6} className="mb-4">
+          <Col lg={3} md={6} className="mb-4">
             <Card className="h-100 feature-card">
               <Card.Body>
                 <User Check className='feature-icon mb-3' />
@@ -119,7 +119,7 @@ function Home() {
             </Card>
           </Col>
 
-          <Col lg={4} md={6} className="mb-4">
+          <Col lg={3} md={6} className="mb-4">
             <Card className="h-100 feature-card">
               <Card.Body>
                 <SquareMousePointer className='feature-icon mb-3' />
@@ -131,7 +131,7 @@ function Home() {
             </Card>
           </Col>
 
-          <Col lg={4} md={6} className="mb-4">
+          <Col lg={3} md={6} className="mb-4">
             <Card className="h-100 feature-card">
               <Card.Body>
                 <NotebookText className="feature-icon mb-3" />
@@ -142,8 +142,8 @@ function Home() {
               </Card.Body>
             </Card>
           </Col>
-        </Row>
-      </Container>
+        </div>
+      </div>
 
       <About />
 
@@ -151,7 +151,7 @@ function Home() {
       <div className="bg-light py-5">
         <Container style={{backgroundColor:"transparent",boxShadow:"0px 0px 0px"}}>
           <h2 className="text-center mb-5">Additional Services</h2>
-          <Row>
+          <Row style={{marginLeft:"70px"}}>
             <Col md={4} className="mb-4">
               <div className="d-flex align-items-start">
                 <Bell className="text-primary me-3" />
@@ -161,7 +161,7 @@ function Home() {
                 </div>
               </div>
             </Col>
-            <Col md={4} className="mb-4">
+            <Col md={3} className="mb-4">
               <div className="d-flex align-items-start">
                 <FileText className="text-primary me-3" />
                 <div>
@@ -170,7 +170,7 @@ function Home() {
                 </div>
               </div>
             </Col>
-            <Col md={4} className="mb-4">
+            <Col md={3} className="mb-4">
               <div className="d-flex align-items-start">
                 <MessageSquare className="text-primary me-3" />
                 <div>

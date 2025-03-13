@@ -41,15 +41,15 @@ function LoginPage({ admin }) {
         toast.success("Login Successful");
 
         sessionStorage.setItem("token", response.data.token);
-        sessionStorage.setItem("userRole", response.data.adminUser.role);
+        sessionStorage.setItem("userRole", admin ? response.data.adminUser.role : response.data.workerUser.role);
 
 
 
         const userData = {
-          id: response.data.adminUser._id,
-          email: response.data.adminUser.email,
-          username: response.data.adminUser.username,
-          ...(admin ? {} : { workerId: response.data.adminUser.workerId })
+          id: admin ? response.data.adminUser._id : response.data.workerUser._id,
+          email: admin ? response.data.adminUser.email : response.data.workerUser.email,
+          username: admin ? response.data.adminUser.username : response.data.workerUser.username,
+          ...(admin ? {} : { workerId: response.data.workerUser.workerId })
         };
         sessionStorage.setItem("userData", JSON.stringify(userData));
 
@@ -155,6 +155,8 @@ function LoginPage({ admin }) {
             {loading ? "Logging in..." : "Login"}
           </button>
 
+          <p className='text-center'>Not a <Link style={{textDecoration:"none",color:'red'}} to={'/login-worker'}>admin</Link></p>
+
           <p className="text-center mt-3">
             Don't have an account?{" "}
             <Link
@@ -166,15 +168,7 @@ function LoginPage({ admin }) {
             </Link>
           </p>
 
-          <p className="text-center mt-2">
-            <Link
-              to="/forgot-password"
-              className="text-danger"
-              style={{ textDecoration: "none" }}
-            >
-              Forgot Password?
-            </Link>
-          </p>
+        
         </div>
       </form>
       <ToastContainer autoClose={2000} theme="colored" position="top-center" />

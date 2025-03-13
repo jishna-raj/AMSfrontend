@@ -361,6 +361,9 @@ body {
   border-bottom: 2px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 1rem;
 }
+.sidebar li{
+  font-size: 15px;
+}
 
 .sidebar .sidebar-link {
   display: block;
@@ -881,4 +884,22 @@ body {
 
 .btn-primary:hover {
   background-color: #0056b3;
+}
+
+
+.badge {
+  padding: 0.5em 1em;
+  border-radius: 0.25em;
+  font-size: 0.875em;
+  font-weight: bold;
+}
+
+.badge-active {
+  background-color: #28a745; /* Green for active */
+  color: white;
+}
+
+.badge-inactive {
+  background-color: #dc3545; /* Red for inactive */
+  color: white;
 }

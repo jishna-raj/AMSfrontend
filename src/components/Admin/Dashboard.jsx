@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faUsers,
@@ -6,7 +6,8 @@ import {
   faBox,
   faTasks,
   faBell,
-  faHistory,
+  faChild,
+  faVenusMars,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   BarChart,
@@ -20,92 +21,215 @@ import {
   PieChart,
   Pie,
   Cell,
-  LineChart,
-  Line,
   AreaChart,
   Area,
 } from 'recharts';
-import './Dashboard'
-import { Row } from 'react-bootstrap';
-
+import { Row, Col } from 'react-bootstrap';
+import {
+  getallchildbeneficiaryApi,
+  allWorkerApi,
+  getAllinventoryApi,
+} from '../../services/allapi'; // Import your API functions
 
 function Dashboard() {
-  // Data for charts
-  const beneficiaryData = [
-    { name: 'Jan', count: 100 },
-    { name: 'Feb', count: 150 },
-    { name: 'Mar', count: 200 },
-    { name: 'Apr', count: 250 },
-    { name: 'May', count: 300 },
-    { name: 'Jun', count: 350 },
-  ];
+  const [ageDistributionData, setAgeDistributionData] = useState([]);
+  const [genderDistributionData, setGenderDistributionData] = useState([]);
+  const [inventoryData, setInventoryData] = useState([]);
+  const [taskData, setTaskData] = useState([]);
+  const [activityData, setActivityData] = useState([]);
+  const [totalBeneficiaries, setTotalBeneficiaries] = useState(0);
+  const [totalWorkers, setTotalWorkers] = useState(0);
+  const [lowStockItems, setLowStockItems] = useState(0);
+  const [pendingTasks, setPendingTasks] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const inventoryData = [
-    { name: 'Rice', value: 400 },
-    { name: 'Wheat', value: 300 },
-    { name: 'Oil', value: 200 },
-    { name: 'Pulses', value: 100 },
-  ];
+  // Fetch all data when the component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Fetch beneficiaries data (child beneficiaries)
+        const beneficiariesResponse = await getallchildbeneficiaryApi();
+        console.log('Beneficiaries Response:', beneficiariesResponse);
 
-  const taskData = [
-    { name: 'Task 1', progress: 80 },
-    { name: 'Task 2', progress: 50 },
-    { name: 'Task 3', progress: 30 },
-    { name: 'Task 4', progress: 90 },
-  ];
+        if (beneficiariesResponse.status >= 200 && beneficiariesResponse.status < 300) {
+          const beneficiaries = beneficiariesResponse.data?.data || beneficiariesResponse.data;
 
-  const activityData = [
-    { id: 1, activity: 'New beneficiary added', time: '2 hours ago' },
-    { id: 2, activity: 'Inventory updated', time: '5 hours ago' },
-    { id: 3, activity: 'Task completed', time: '1 day ago' },
-    { id: 4, activity: 'Report generated', time: '2 days ago' },
-  ];
+          if (beneficiaries && Array.isArray(beneficiaries)) {
+            setTotalBeneficiaries(beneficiaries.length);
+
+            // Prepare age distribution data
+            const ageGroups = {
+              '0-5': 0,
+              '6-10': 0,
+              '11-15': 0,
+              '16+': 0,
+            };
+
+            beneficiaries.forEach((beneficiary) => {
+              const age = beneficiary.age;
+              if (age >= 0 && age <= 5) {
+                ageGroups['0-5']++;
+              } else if (age >= 6 && age <= 10) {
+                ageGroups['6-10']++;
+              } else if (age >= 11 && age <= 15) {
+                ageGroups['11-15']++;
+              } else {
+                ageGroups['16+']++;
+              }
+            });
+
+            const formattedAgeData = Object.keys(ageGroups).map((group) => ({
+              name: group,
+              count: ageGroups[group],
+            }));
+            setAgeDistributionData(formattedAgeData);
+
+            // Prepare gender distribution data
+            const genderGroups = {
+              Male: 0,
+              Female: 0,
+              Other: 0,
+            };
+
+            beneficiaries.forEach((beneficiary) => {
+              const gender = beneficiary.gender;
+              if (gender === 'Male') {
+                genderGroups.Male++;
+              } else if (gender === 'Female') {
+                genderGroups.Female++;
+              } else {
+                genderGroups.Other++;
+              }
+            });
+
+            const formattedGenderData = Object.keys(genderGroups).map((gender) => ({
+              name: gender,
+              count: genderGroups[gender],
+            }));
+            setGenderDistributionData(formattedGenderData);
+          } else {
+            console.error('Beneficiaries data is not an array:', beneficiaries);
+          }
+        }
+
+        // Fetch workers data
+        const workersResponse = await allWorkerApi();
+        console.log('Workers Response:', workersResponse);
+
+        if (workersResponse.status >= 200 && workersResponse.status < 300) {
+          const workers = workersResponse.data?.workers || workersResponse.data;
+          if (workers && Array.isArray(workers)) {
+            setTotalWorkers(workers.length);
+          } else {
+            console.error('Workers data is not an array:', workers);
+          }
+        }
+
+        // Fetch inventory data
+        const inventoryResponse = await getAllinventoryApi();
+        console.log('Inventory Response:', inventoryResponse);
+
+        if (inventoryResponse.status >= 200 && inventoryResponse.status < 300) {
+          const inventory = inventoryResponse.data?.data || inventoryResponse.data;
+          if (inventory && Array.isArray(inventory)) {
+            const lowStock = inventory.filter((item) => item.quantity < item.minimumThreshold).length;
+            setLowStockItems(lowStock);
+
+            // Prepare inventory distribution data
+            const distributionData = inventory.map((item) => ({
+              name: item.itemName,
+              value: item.quantity,
+            }));
+            setInventoryData(distributionData);
+          } else {
+            console.error('Inventory data is not an array:', inventory);
+          }
+        }
+
+        // Fetch tasks data (mock data for now)
+        const tasks = [
+          { name: 'Task 1', progress: 80 },
+          { name: 'Task 2', progress: 50 },
+          { name: 'Task 3', progress: 30 },
+          { name: 'Task 4', progress: 90 },
+        ];
+        setTaskData(tasks);
+        setPendingTasks(tasks.filter((task) => task.progress < 100).length);
+
+        // Fetch activity data (mock data for now)
+        const activities = [
+          { id: 1, activity: 'New beneficiary added', time: '2 hours ago' },
+          { id: 2, activity: 'Inventory updated', time: '5 hours ago' },
+          { id: 3, activity: 'Task completed', time: '1 day ago' },
+          { id: 4, activity: 'Report generated', time: '2 days ago' },
+        ];
+        setActivityData(activities);
+      } catch (err) {
+        setError('Failed to fetch data. Please try again.');
+        console.error('Error fetching data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const COLORS = ['#28a745', '#218838', '#1e7e34', '#19692c'];
 
+  if (loading) {
+    return <div className="text-center mt-4">Loading dashboard...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center mt-4 text-danger">{error}</div>;
+  }
+
   return (
-    <div className="dashboard p-4" style={{marginLeft:'80px'}}>
+    <div className="dashboard" style={{ marginLeft: '100px' }}>
       <h2 className="mb-4">Dashboard</h2>
 
       {/* Cards Section */}
-      <Row className="mb-4">
+      <div className="row mb-4 w-100">
         <div className="col-md-3">
           <div className="card bg-success text-white p-3 text-center">
             <FontAwesomeIcon icon={faUsers} size="2x" className="mb-2" />
             <h5>Total Beneficiaries</h5>
-            <p className="display-4">500</p>
+            <p className="text-dark fw-bold fs-5">{totalBeneficiaries}</p>
           </div>
         </div>
         <div className="col-md-3">
           <div className="card bg-success text-white p-3 text-center">
             <FontAwesomeIcon icon={faUserShield} size="2x" className="mb-2" />
             <h5>Total Workers</h5>
-            <p className="display-4">20</p>
+            <p className="text-dark fw-bold fs-5">{totalWorkers}</p>
           </div>
         </div>
         <div className="col-md-3">
           <div className="card bg-success text-white p-3 text-center">
             <FontAwesomeIcon icon={faBox} size="2x" className="mb-2" />
             <h5>Low Stock Items</h5>
-            <p className="display-4">5</p>
+            <p className="text-dark fw-bold fs-5">{lowStockItems}</p>
           </div>
         </div>
         <div className="col-md-3">
-          <div className="card bg-success text-white p-3 text-center">
+          <div className="card bg-success text-white text-center">
             <FontAwesomeIcon icon={faTasks} size="2x" className="mb-2" />
             <h5>Pending Tasks</h5>
-            <p className="display-4">10</p>
+            <p className="text-dark fw-bold fs-5">{pendingTasks}</p>
           </div>
         </div>
-      </Row>
+      </div>
 
       {/* Charts Section */}
       <Row className="mb-4">
-        <div className="col-md-7">
+        <Col md={7}>
           <div className="card p-3">
-            <h5>Beneficiary Gth</h5>
+            <h5>Beneficiary Age Distribution</h5>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={beneficiaryData}>
+              <BarChart data={ageDistributionData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
@@ -115,15 +239,15 @@ function Dashboard() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </div>
-        <div className="col-md-4">
+        </Col>
+        <Col md={4}>
           <div className="card p-3">
-            <h5>Inventory Distribution</h5>
+            <h5>Beneficiary Gender Distribution</h5>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
-                  data={inventoryData}
-                  dataKey="value"
+                  data={genderDistributionData}
+                  dataKey="count"
                   nameKey="name"
                   cx="50%"
                   cy="50%"
@@ -131,7 +255,7 @@ function Dashboard() {
                   fill="#28a745"
                   label
                 >
-                  {inventoryData.map((entry, index) => (
+                  {genderDistributionData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -140,12 +264,12 @@ function Dashboard() {
               </PieChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        </Col>
       </Row>
 
       {/* Tasks Overview Section */}
-      <div className="row mb-4">
-        <div className="col-md-6">
+      <Row className="mb-4">
+        <Col md={6}>
           <div className="card p-3">
             <h5>Tasks Overview</h5>
             <ResponsiveContainer width="100%" height={300}>
@@ -158,10 +282,10 @@ function Dashboard() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        </Col>
 
         {/* Recent Activities Section */}
-        <div className="col-md-5">
+        <Col md={5}>
           <div className="card p-3">
             <h5>Recent Activities</h5>
             <ul className="list-unstyled">
@@ -175,12 +299,12 @@ function Dashboard() {
               ))}
             </ul>
           </div>
-        </div>
-      </div>
+        </Col>
+      </Row>
 
       {/* Notifications Section */}
-      <div className="">
-        <div className="col-md-12">
+      <Row>
+        <Col md={12}>
           <div className="card p-3">
             <h5>
               <FontAwesomeIcon icon={faBell} className="me-2" />
@@ -207,8 +331,8 @@ function Dashboard() {
               </li>
             </ul>
           </div>
-        </div>
-      </div>
+        </Col>
+      </Row>
     </div>
   );
 }

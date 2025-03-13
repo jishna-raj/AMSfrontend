@@ -18,7 +18,7 @@ function Header() {
                             <Nav.Link href="#home">Home</Nav.Link>
                             <Nav.Link href="#about">About</Nav.Link>
                             <Nav.Link href="#services">Services</Nav.Link>
-                            <Button variant="outline-light" className="ms-2">Logout</Button>
+                            <Button variant="outline-light" className="ms-2"><Link style={{textDecoration:"none",color:"black"}} to={'/health-login'}>Login</Link></Button>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

@@ -49,7 +49,7 @@ function App() {
     <>
       <Routes>
         <Route path='/' element={<HeroPage />} />
-        <Route path='/user-login' element={<Login />} />
+        <Route path='/health-login' element={<Login />} />
         <Route path='/admin-reg' element={<Reg admin={true} />} />
         <Route path='/admin-log' element={<LoginPage admin={true} />} />
         <Route path='/reg-worker' element={<Reg />} />
@@ -86,9 +86,9 @@ function App() {
         <Route path="/lactating" element={<Mother />} />
         <Route path="/pregnant" element={<Pregnant />} />
         <Route path='/add-pregnant' element={<Addpregnant />} />
-        <Route path='/update-pregnant' element={<Updatepregnant />} />
+        <Route path='/update-pregnant/:id' element={<Updatepregnant />} />
         <Route path='/add-lact' element={<AddMother />} />
-        <Route path='/update-lact' element={<UpdateMother />} />
+        <Route path='/update-lact/:id' element={<UpdateMother />} />
         <Route path='/worker' element={<WorkerDashboard/>}/>
 
         <Route path='/admin-beneficiary' element={<WorkerBB />} />

@@ -16,6 +16,27 @@ export const AdminloginApi = async (reqBody) => {
 
 export const WokerloginApi = async (reqBody) => {
     return await commonApi('POST', `${serverUrl}/login-worker`, reqBody, "")
+
+
+
+}
+
+
+
+export const getalluserapi = async() =>{
+    return await commonApi('GET',`${serverUrl}/all-user`)
+}
+
+
+export const deleteUserApi = async(id) => {
+
+    return await commonApi('DELETE',`${serverUrl}/delete-user/${id}`)
+}
+
+
+export const updateUserApi = async(id,reqBody) =>{
+
+    return await commonApi('PUT',`${serverUrl}/update-user/${id}`,reqBody)
 }
 
 
@@ -143,4 +164,98 @@ export const deleteChildBeneficiaryApi = async(id)=>{
 export const addmotherApi = async(reqBody) =>{
 
     return await commonApi('POST',`${serverUrl}/add-lact`,reqBody,'')
+}
+
+
+export const getallmotherApi = async() => {
+    return await commonApi('GET',`${serverUrl}/all-mother`)
+}
+
+
+export const getamotherApi = async(id) => {
+
+    return await commonApi('GET',`${serverUrl}/a-mother/${id}`)
+}
+
+
+export const updatemotherApi = async (id,reqBody) => {
+
+    return await commonApi('PUT',`${serverUrl}/update-lact/${id}`,reqBody)
+}
+
+export const deletemotherApi = async (id) => {
+
+    return await commonApi('DELETE',`${serverUrl}/delete-lact/${id}`)
+}
+
+
+/* pregnant */
+
+
+export const addPregnantApi = async (reqbody,reqHeader) => {
+    return await commonApi('POST',`${serverUrl}/add-pregnant`,reqbody,reqHeader)
+}
+
+
+
+export const getAllpregnantApi = async()=>{
+
+    return await commonApi('GET',`${serverUrl}/get-allpregnant`)
+}
+
+
+
+export const getApregnantApi = async(id)=>{
+
+    return await commonApi('GET',`${serverUrl}/getapregnant/${id}`)
+}
+
+export const updatepregnantApi = async(id,reqBody)=>{
+
+    return await commonApi('PUT',`${serverUrl}/update-pregnant/${id}`,reqBody)
+}
+
+
+export const deletepregnantApi = async(id)=>{
+    return await commonApi('DELETE',`${serverUrl}/delete-pregnant/${id}`)
+}
+
+
+export const parentregisterApi = async(reqBody)=>{
+
+    return await commonApi('POST',`${serverUrl}/parent-register`,reqBody)
+}
+
+
+export const parentLoginApi = async(reqBody) => {
+
+    return await commonApi('POST',`${serverUrl}/parent-login`,reqBody)
+}
+
+export const HealthLoginApi = async(reqBody) =>{
+
+    return await commonApi('POST',`${serverUrl}/health-login`,reqBody)
+}
+
+
+export const addHealthComplaintApi = async(reqBody) =>{
+
+
+    return await commonApi('POST',`${serverUrl}/add-complaint`,reqBody)
+}
+
+export const getAllComplaintApi = async() => {
+
+    return await commonApi('GET',`${serverUrl}/get-complaint`)
+}
+
+export const getAComplaintApi = async(id) => {
+
+    return await commonApi('GET',`${serverUrl}/get-a-complaint/${id}`)
+}
+
+
+export const updateComplaintApi = async(id,reqBody) =>{
+
+    return await commonApi('PUT',`${serverUrl}/update-complaint/${id}`,reqBody)
 }

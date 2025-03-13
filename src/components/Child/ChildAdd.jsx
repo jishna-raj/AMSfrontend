@@ -5,6 +5,7 @@ import { faUserTie } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import { addChildApi } from '../../services/allapi';
+import 'react-toastify/dist/ReactToastify.css'; 
 
 function ChildAdd() {
   const navigate = useNavigate();

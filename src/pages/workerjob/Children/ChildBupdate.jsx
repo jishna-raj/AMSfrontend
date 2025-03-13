@@ -370,8 +370,8 @@ function ChildBupdate() {
                 <input 
                   type="text" 
                   className="form-input" 
-                  name={`healthRecords[${index}].recentIllnesses`}
-                  value={record.recentIllnesses}
+                  name={`healthRecords[${index}].illnesses`}
+                  value={record.illnesses}
                   onChange={handleChange}
                 />
               </div>

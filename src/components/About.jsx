@@ -1,21 +1,21 @@
 import React from 'react';
-import './About.css'; 
+import './About.css';
 
 function About() {
     return (
         <div className="about-container">
             <div className="row about-row">
-            <h1 style={{fontWeight:'600',textAlign:"center",marginTop:'50px',color:'rgb(6, 59, 6)'}}>ABOUT US</h1>
-                
-                <div className="col-md-6 d-flex justify-content-center align-items-center flex-column">
+                <h1 style={{ fontWeight: '600', textAlign: "center", marginTop: '50px', color: 'rgb(6, 59, 6)' }}>ABOUT US</h1>
+
+                <div className="col-md-5 d-flex justify-content-center align-items-center flex-column">
 
 
                     <img src="https://img.freepik.com/free-vector/child-adoption-concept-illustration_114360-8738.jpg" alt="About" className="about-img" />
                 </div>
-                <div className="col-md-6">
-                    
+                <div className="col-md-5">
+
                     <p className="about-text">
-                        
+
 
                         <br /><br />
 
@@ -30,7 +30,7 @@ function About() {
                             <li><strong>Beneficiary Management:</strong> Organize and manage the Beneficiaries.</li>
                             <li><strong>Event Notifications:</strong> Generate and send notifications for events and important updates.</li>
                             <li><strong>Health and Nutrition Tracking:</strong> Monitor and provide updates on food supplements, immunizations, and other health-related services.</li>
-                        
+
                         </ul>
                     </p>
                 </div>
