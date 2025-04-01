@@ -40,6 +40,8 @@ import UpdateMother from './pages/workerjob/lactinating/UpdateMother'
 import ChildBAdd from './pages/workerjob/Children/childBadd'
 import ChildBupdate from './pages/workerjob/Children/ChildBupdate'
 import ChildManagement from './pages/workerjob/Children/ChildManagement'
+import Notification from './pages/workerjob/Notification'
+import ParentChild from './components/Child/ParentChild'
 
 
 function App() {
@@ -77,6 +79,8 @@ function App() {
         <Route path='/add-child' element={<ChildAdd />} />
         <Route path='/update-child/:id' element={<ChildUpdate />} />
 
+        <Route path='/parent-child/:id' element={<ParentChild />} />
+
 
         <Route path='/complaints' element={<Complaints />} />
         <Route path='/add-complaint' element={<HealthComplaint />} />
@@ -90,6 +94,7 @@ function App() {
         <Route path='/add-lact' element={<AddMother />} />
         <Route path='/update-lact/:id' element={<UpdateMother />} />
         <Route path='/worker' element={<WorkerDashboard/>}/>
+        <Route path='/message' element={<Notification/>}/>
 
         <Route path='/admin-beneficiary' element={<WorkerBB />} />
         <Route path='/child-beneficiary' element={<ChildManagement/>}/>

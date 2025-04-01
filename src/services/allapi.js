@@ -259,3 +259,18 @@ export const updateComplaintApi = async(id,reqBody) =>{
 
     return await commonApi('PUT',`${serverUrl}/update-complaint/${id}`,reqBody)
 }
+
+
+export const addNotificationApi = async(reqBody)=>{
+
+    return await commonApi('POST',`${serverUrl}/notification`,reqBody)
+}
+
+export const getAnotificationApi = async(id)=>{
+    return await commonApi('GET',`${serverUrl}/a-notification/${id}`)
+
+}
+
+export const getaparentChildByIdApi = async (id) => {
+    return await commonApi('GET', `${serverUrl}/parent-child/${id}`, "", "");
+};

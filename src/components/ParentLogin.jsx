@@ -31,7 +31,7 @@ function ParentLogin() {
             // Handle successful login
             if (response.data.token) {
                 sessionStorage.setItem('parenttoken', response.data.token); // Save token to localStorage
-                navigate(`/child/${childId}`) // Redirect to the parent dashboard
+                navigate(`/parent-child/${childId}`) // Redirect to the parent dashboard
             } else {
                 setError('Login failed. Please check your credentials.');
             }

@@ -163,6 +163,18 @@ function WorkerDashboard() {
               </Link>
             </div>
           </div>
+
+
+         
+          <div className="col-md-5">
+            <div className="dashboard-card inventories-card">
+              <h2>Notifications</h2>
+              <p></p>
+              <Link to={'/message'}>
+                <button className="view-button">Send Notifications</button>
+              </Link>
+            </div>
+          </div>
         </Row>
       </div>
     </div>

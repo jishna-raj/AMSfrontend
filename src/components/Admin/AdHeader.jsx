@@ -16,7 +16,7 @@ function Header() {
         sessionStorage.clear();
 
         // Redirect to the login page
-        navigate('/admin-log'); // Adjust the path as needed
+        navigate('/'); // Adjust the path as needed
     };
 
     return (

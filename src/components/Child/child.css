@@ -203,3 +203,21 @@
     border-radius: 8px;
     background: #fafafa;
   }
+  .notification-list {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  
+  .notification-item {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s;
+  }
+  
+  .notification-item:hover {
+    background-color: #e9ecef;
+  }
+  
+  .notification-item h5 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
