@@ -329,7 +329,9 @@ function Addpregnant() {
             />
           </label>
           <label>
-            Guardian Phone:
+        
+            Guardian Phone:<br />
+           <strong> <span className='text-warning me-3'> *Please include country code</span></strong>
             <input
               type="text"
               name="guardianPhone"

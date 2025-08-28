@@ -42,6 +42,7 @@ import ChildBupdate from './pages/workerjob/Children/ChildBupdate'
 import ChildManagement from './pages/workerjob/Children/ChildManagement'
 import Notification from './pages/workerjob/Notification'
 import ParentChild from './components/Child/ParentChild'
+import BeneNotification from './pages/workerjob/BeneNotification'
 
 
 function App() {
@@ -96,10 +97,14 @@ function App() {
         <Route path='/worker' element={<WorkerDashboard/>}/>
         <Route path='/message' element={<Notification/>}/>
 
+        <Route path='/benemessage' element ={<BeneNotification/>}/>
+
         <Route path='/admin-beneficiary' element={<WorkerBB />} />
         <Route path='/child-beneficiary' element={<ChildManagement/>}/>
         <Route path='/add-childbeneficiary' element={<ChildBAdd/>}/>
         <Route path='/update-childbeneficiary/:id' element={<ChildBupdate/>}/>
+
+        
 
 
 

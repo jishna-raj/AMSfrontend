@@ -69,7 +69,7 @@ export const updateChildApi = async (id, reqBody, reqHeader) => {
 
 
 export const deleteChildApi = async (id) =>{
-    return await commonApi('DELETE', `${serverUrl}/delete-child/${id}`,"","");
+    return await commonApi('DELETE', `${serverUrl}/delete-child/${id}`);
 }
 
 
@@ -274,3 +274,9 @@ export const getAnotificationApi = async(id)=>{
 export const getaparentChildByIdApi = async (id) => {
     return await commonApi('GET', `${serverUrl}/parent-child/${id}`, "", "");
 };
+
+
+
+export const AddBeneNotificationApi = async(reqBody) =>{
+    return await commonApi('POST',`${serverUrl}/add-beneNotifications`,reqBody)
+}

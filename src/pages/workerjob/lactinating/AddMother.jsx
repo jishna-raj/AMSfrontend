@@ -251,7 +251,8 @@ function AddMother() {
 
                     {/* Guardian Phone */}
                     <div className="input-group">
-                        <label className="form-label">Guardian Phone</label>
+                        <label className="form-label">Guardian Phone</label><br />
+                        <strong> <span className='text-warning me-3'> *Please include country code</span></strong>
                         <input
                             type="text"
                             name="guardianPhone"

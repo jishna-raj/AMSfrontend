@@ -46,10 +46,7 @@ function ChildAdd() {
       relationship: "",
       contactNumber: "",
     },
-    nutritionStatus: {
-      date: "",
-      status: "",
-    },
+   
   });
 
   console.log(childDetails);
@@ -104,8 +101,11 @@ function ChildAdd() {
       allergies,
       dietaryPreferences,
       emergencyContact,
-      nutritionStatus,
+      
     } = childDetails;
+
+   
+    
 
     // Validate required fields
     if (
@@ -123,16 +123,13 @@ function ChildAdd() {
       !parentDetails.parentContact ||
       !parentDetails.parentEmail ||
       !parentDetails.parentOccupation ||
-      siblings.length === 0 ||
       healthRecords.length === 0 ||
       medicalHistory.chronicConditions.length === 0 ||
       medicalHistory.surgeries.length === 0 ||
-      allergies.length === 0 ||
       !emergencyContact.name ||
       !emergencyContact.relationship ||
-      !emergencyContact.contactNumber ||
-      !nutritionStatus.date ||
-      !nutritionStatus.status
+      !emergencyContact.contactNumber
+      
     ) {
       toast.info("Please fill the form completely");
       return;
@@ -154,7 +151,6 @@ function ChildAdd() {
     reqBody.append("allergies", JSON.stringify(allergies));
     reqBody.append("dietaryPreferences", JSON.stringify(dietaryPreferences));
     reqBody.append("emergencyContact", JSON.stringify(emergencyContact));
-    reqBody.append("nutritionStatus", JSON.stringify(nutritionStatus));
 
     // Get token from session storage
     const token = sessionStorage.getItem("token");
@@ -167,6 +163,9 @@ function ChildAdd() {
 
       try {
         const result = await addChildApi(reqBody, reqHeader);
+
+        console.log(result);
+        
         if (result.status === 200) {
           toast.success("Child added successfully");
           setChildDetails({
@@ -204,10 +203,7 @@ function ChildAdd() {
               relationship: "",
               contactNumber: "",
             },
-            nutritionStatus: {
-              date: "",
-              status: "",
-            },
+           
           });
           navigate('/display-child');
         } else {
@@ -256,10 +252,7 @@ function ChildAdd() {
         relationship: "",
         contactNumber: "",
       },
-      nutritionStatus: {
-        date: "",
-        status: "",
-      },
+     
     })
     
     setPreview("")
@@ -788,34 +781,7 @@ function ChildAdd() {
             </div>
           </div>
 
-          {/* Nutrition Status */}
-          <div className="form-section">
-            <h3>Nutrition Status</h3>
-            <div className="form-group">
-              <label htmlFor="nutritionDate">Date:</label>
-              <input
-                type="date"
-                id="nutritionDate"
-                name="nutritionDate"
-                value={childDetails.nutritionStatus.date}
-                onChange={(e) => handleNestedChange("nutritionStatus", "date", e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="nutritionStatus">Status:</label>
-              <select
-                id="nutritionStatus"
-                name="nutritionStatus"
-                value={childDetails.nutritionStatus.status}
-                onChange={(e) => handleNestedChange("nutritionStatus", "status", e.target.value)}
-              >
-                <option value="">Select status</option>
-                <option value="Normal">Normal</option>
-                <option value="Underweight">Underweight</option>
-                <option value="Overweight">Overweight</option>
-              </select>
-            </div>
-          </div>
+          
 
           {/* Submit Button */}
           <div className="form-actions">

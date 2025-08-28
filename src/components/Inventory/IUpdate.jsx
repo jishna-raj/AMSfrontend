@@ -11,7 +11,6 @@ function IUpdate({ item, onUpdateSuccess }) {
         itemName: '',
         category: '',
         quantity: '',
-        unitPrice: '',
         supplier: '',
         unit: 'units',
         minimumThreshold: '',
@@ -45,7 +44,6 @@ function IUpdate({ item, onUpdateSuccess }) {
                 itemName: item.itemName || '',
                 category: item.category || '',
                 quantity: item.quantity || '',
-                unitPrice: item.unitPrice || '',
                 supplier: item.supplier || '',
                 unit: item.unit || 'units',
                 minimumThreshold: item.minimumThreshold || '',
@@ -62,17 +60,14 @@ function IUpdate({ item, onUpdateSuccess }) {
     const userRole = sessionStorage.getItem('role') || 'admin';
 
     const validateFormData = () => {
-        const { quantity, unitPrice, minimumThreshold, expiryDate, lastRestocked } = formData;
+        const { quantity, minimumThreshold, expiryDate, lastRestocked } = formData;
 
         // Check if quantity, unitPrice, and minimumThreshold are valid numbers
         if (isNaN(quantity) || quantity < 0) {
             toast.error('Quantity must be a valid number');
             return false;
         }
-        if (isNaN(unitPrice) || unitPrice < 0) {
-            toast.error('Unit price must be a valid number');
-            return false;
-        }
+        
         if (isNaN(minimumThreshold) || minimumThreshold < 0) {
             toast.error('Minimum threshold must be a valid number');
             return false;
@@ -124,7 +119,6 @@ function IUpdate({ item, onUpdateSuccess }) {
                 expiryDate: new Date(formData.expiryDate).toISOString(),
                 lastRestocked: new Date(formData.lastRestocked).toISOString(),
                 quantity: Number(formData.quantity),
-                unitPrice: Number(formData.unitPrice),
                 minimumThreshold: Number(formData.minimumThreshold)
             };
 
@@ -135,7 +129,7 @@ function IUpdate({ item, onUpdateSuccess }) {
 
             // Make the API call to update the inventory
             const response = await updateInventoryApi(item._id, reqBody);
-           /*  console.log(response.status); */
+            console.log(response);
             
 
             if (response.status === 200) {
@@ -153,7 +147,7 @@ function IUpdate({ item, onUpdateSuccess }) {
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: name === 'quantity' || name === 'unitPrice' || name === 'minimumThreshold' 
+            [name]: name === 'quantity'|| name === 'minimumThreshold' 
                    ? Number(value) 
                    : value
         }));
@@ -229,20 +223,7 @@ function IUpdate({ item, onUpdateSuccess }) {
                             </div>
                         </div>
 
-                        <div className="mb-3">
-                            <label>Unit Price (₹)</label>
-                            <input
-                                type="number"
-                                name="unitPrice"
-                                className="form-control"
-                                value={formData.unitPrice}
-                                onChange={handleInputChange}
-                                min="0"
-                                step="0.01"
-                                required
-                            />
-                        </div>
-
+                       
                         <div className="mb-3">
                             <label>Supplier</label>
                             <input

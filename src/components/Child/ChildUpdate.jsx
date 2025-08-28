@@ -25,7 +25,7 @@ function ChildUpdate() {
     allergies: [],
     dietaryPreferences: { vegetarian: '', lactoseIntolerant: '' },
     emergencyContact: { name: '', relationship: '', contactNumber: '' },
-    nutritionStatus: { date: '', status: '' },
+    
     
   });
   
@@ -74,7 +74,7 @@ function ChildUpdate() {
     formData.append('allergies', JSON.stringify(child.allergies));
     formData.append('dietaryPreferences', JSON.stringify(child.dietaryPreferences));
     formData.append('emergencyContact', JSON.stringify(child.emergencyContact));
-    formData.append('nutritionStatus', JSON.stringify(child.nutritionStatus));
+   
     
 
     try {
@@ -535,35 +535,6 @@ function ChildUpdate() {
                 value={child.emergencyContact.contactNumber}
                 onChange={(e) => handleNestedChange('emergencyContact', 'contactNumber', e.target.value)}
               />
-            </div>
-          </div>
-  
-          {/* Nutrition Status */}
-          <div className="form-section">
-            <h3>Nutrition Status</h3>
-            <div className="form-group">
-              <label htmlFor="nutritionDate">Date:</label>
-              <input
-                type="date"
-                id="nutritionDate"
-                name="nutritionDate"
-                value={new Date(child.nutritionStatus.date).toISOString().split('T')[0]} // Fix here
-                onChange={(e) => handleNestedChange('nutritionStatus', 'date', e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="nutritionStatus">Status:</label>
-              <select
-                id="nutritionStatus"
-                name="nutritionStatus"
-                value={child.nutritionStatus.status}
-                onChange={(e) => handleNestedChange('nutritionStatus', 'status', e.target.value)}
-              >
-                <option value="">Select status</option>
-                <option value="Normal">Normal</option>
-                <option value="Underweight">Underweight</option>
-                <option value="Overweight">Overweight</option>
-              </select>
             </div>
           </div>
   

@@ -67,7 +67,7 @@ function ChildManagement() {
 
         </div>
         <Link to={'/add-childbeneficiary'} 
-                    className="text-decoration-none text-white">
+                    className="text-decoration-none text-dark">
           <FontAwesomeIcon icon={faPlus} className="me-2" />
           Add New
         </Link>
@@ -106,6 +106,7 @@ function ChildManagement() {
                     <li>Age: {child?.age}</li>
                     <li>Gender: {child?.gender}</li>
                     <li>DOB: {new Date(child?.dateOfBirth).toLocaleDateString()}</li>
+                    <strong><li>Adhar Number: {child?.AdharNumber}</li></strong>
                   </ul>
                 </div>
 

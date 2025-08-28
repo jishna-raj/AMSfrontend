@@ -171,7 +171,11 @@ function WorkerDashboard() {
               <h2>Notifications</h2>
               <p></p>
               <Link to={'/message'}>
-                <button className="view-button">Send Notifications</button>
+                <button className="view-button  mb-4">Send Child Notifications</button>
+              </Link>
+
+              <Link to={'/benemessage'}>
+                <button className="view-button">Send Beneficiaries Notifications</button>
               </Link>
             </div>
           </div>

@@ -19,13 +19,12 @@ function DisplayChild() {
       try {
         const response = await getallchildApi();
         if (response && response.data.children) {
-          console.log("Fetched Children Data:", response.data.children); // Log fetched data
           setChildren(response.data.children);
         } else {
           setError('No children found');
         }
       } catch (err) {
-        setError('Failed to fetch children');
+  
         console.error('Error fetching children:', err);
       } finally {
         setLoading(false);
@@ -39,11 +38,11 @@ function DisplayChild() {
     if (children.length > 0) {
       generateHealthAlerts(children);
     }
-  }, [children]); // Run this effect whenever `children` changes
+  }, [children]);
 
   const calculateBMI = (weight, height) => {
     if (weight && height) {
-      const heightInMeters = height / 100; // Convert height from cm to meters
+      const heightInMeters = height / 100;
       return (weight / (heightInMeters * heightInMeters)).toFixed(2);
     }
     return null;
@@ -52,70 +51,68 @@ function DisplayChild() {
   const generateHealthAlerts = (children) => {
     const alerts = [];
 
-    console.log("Generating health alerts for children:", children); // Log children data
-
     children.forEach(child => {
-      const { name, age, healthRecords, allergies } = child;
+      const { id, name, age, healthRecords, allergies } = child;
+      const childAlerts = [];
+      let highestAlertType = 'info';
 
-      // Access the latest health record (first item in the array)
-      const latestHealthRecord = healthRecords?.[0];
-      const weight = latestHealthRecord?.weight; // Access weight from the latest health record
-      const height = latestHealthRecord?.height; // Access height from the latest health record
-
-      // Log weight and height for debugging
-      console.log(`Child: ${name}, Weight: ${weight}, Height: ${height}`);
-
-      // Example: Check if a child is due for a Polio booster shot
+      // 1. Vaccination Alert
       if (age === 5) {
-        alerts.push({
-          type: 'warning',
-          message: `${name} (Age: ${age}) is due for a Polio booster shot.`
-        });
+        childAlerts.push('due for Polio booster shot');
+        highestAlertType = 'warning';
       }
 
-      // Calculate BMI and add alerts based on BMI categories
-      if (weight && height) {
-        const bmi = calculateBMI(weight, height);
-        console.log(`Child: ${name}, BMI: ${bmi}`); // Log BMI for debugging
+      // 2. BMI Alert
+      const latestHealthRecord = healthRecords?.[0];
+      const weight = latestHealthRecord?.weight;
+      const height = latestHealthRecord?.height;
+      const bmi = calculateBMI(weight, height);
+
+      if (bmi) {
         if (bmi < 18.5) {
-          alerts.push({
-            type: 'danger',
-            message: `${name} (Age: ${age}) is underweight (BMI: ${bmi}). Please consult a nutritionist.`
-          });
+          childAlerts.push(`underweight (BMI: ${bmi})`);
+          highestAlertType = 'danger';
         } else if (bmi >= 25 && bmi < 30) {
-          alerts.push({
-            type: 'warning',
-            message: `${name} (Age: ${age}) is overweight (BMI: ${bmi}). Encourage physical activity.`
-          });
+          childAlerts.push(`overweight (BMI: ${bmi})`);
+          if (highestAlertType !== 'danger') highestAlertType = 'warning';
         } else if (bmi >= 30) {
-          alerts.push({
-            type: 'danger',
-            message: `${name} (Age: ${age}) is obese (BMI: ${bmi}). Immediate medical attention is required.`
-          });
+          childAlerts.push(`obese (BMI: ${bmi})`);
+          highestAlertType = 'danger';
         }
-      } else {
-        console.log(`Child: ${name}, Weight or Height is missing. Cannot calculate BMI.`);
       }
 
-      // Check for severe allergies
-      if (allergies?.length > 0) {
+      // 3. Allergy Alert
+      const allergyList = Array.isArray(allergies) 
+        ? allergies 
+        : allergies?.split(/,\s*/) || [''];
+      
+      if (allergyList.length > 0 && allergyList[0] !== '' && allergyList[0] !== "nill"  && allergyList[0] !== "Nill" ) {
+        childAlerts.push(`has allergies: ${allergyList.join(', ')}`);
+        highestAlertType = 'danger';
+      }
+
+      // Create combined alert if any issues exist
+      if (childAlerts.length > 0) {
         alerts.push({
-          type: 'danger',
-          message: `${name} (Age: ${age}) has severe allergies: ${allergies.join(", ")}. Ensure proper precautions.`
+          type: highestAlertType,
+          message: `${name} (Age: ${age}): ${childAlerts.join(', ')}.`
         });
       }
     });
 
-    console.log("Generated Health Alerts:", alerts); // Log generated alerts
     setHealthAlerts(alerts);
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="d-flex justify-content-center mt-5">
+      <div className="spinner-border text-success" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </div>
+    </div>;
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <div className="alert alert-danger mt-3">{error}</div>;
   }
 
   const handleDeleteChild = async (id) => {
@@ -124,7 +121,7 @@ function DisplayChild() {
       if (response.status === 200) {
         toast.success('Child deleted successfully');
         const updatedChildren = children.filter(child => child.id !== id);
-        setChildren(updatedChildren); // Update the `children` state
+        setChildren(updatedChildren);
       } else {
         toast.error('Failed to delete child');
       }
@@ -134,15 +131,18 @@ function DisplayChild() {
     }
   };
 
+  console.log(children);
+  
+
   return (
     <>
-      <div className="invent">
+      <div className="invent vh-100">
         <div
           className="p-2 text-light d-flex justify-content-between align-items-center"
           style={{ backgroundImage: "linear-gradient(180deg, #083b14, #0a551a)" }}
         >
-          <Link  to={userRole === 'admin' ? '/admin' : '/worker'} 
-                     style={{ textDecoration: 'none', color: 'white' }}>
+          <Link to={userRole === 'admin' ? '/admin' : '/worker'} 
+                style={{ textDecoration: 'none', color: 'white' }}>
             <h2 className="ms-3 fw-bold">Child Management</h2>
           </Link>
           <Link to={'/add-child'}>
@@ -176,7 +176,7 @@ function DisplayChild() {
                     <div className="card-item">
                       <span className="item-label">Address:</span>
                       <span className="item-value">
-                        {child.address.street}, {child.address.city}
+                        {child.address?.street}, {child.address?.city}
                       </span>
                     </div>
                   </div>
@@ -186,7 +186,10 @@ function DisplayChild() {
                         <FontAwesomeIcon icon={faPenToSquare} style={{ color: 'green' }} />
                       </button>
                     </Link>
-                    <button className="btn btn-sm" onClick={() => handleDeleteChild(child.id)}> 
+                    <button 
+                      className="btn btn-sm" 
+                      onClick={() => handleDeleteChild(child.id)}
+                    >
                       <FontAwesomeIcon icon={faTrash} style={{ color: 'red' }} />
                     </button>
                   </div>
@@ -198,7 +201,7 @@ function DisplayChild() {
 
         <div className="row mt-4 m-5">
           <div className="col-md-11">
-            <h4>Health Alerts</h4>
+            <h4 className='text-light mb-4'>Health Alerts</h4>
             {healthAlerts.length > 0 ? (
               healthAlerts.map((alert, index) => (
                 <div key={index} className={`alert alert-${alert.type}`}>
@@ -209,7 +212,6 @@ function DisplayChild() {
               <div className="alert alert-info">No health alerts to display.</div>
             )}
           </div>
-          <div className="col-md-1"></div>
         </div>
       </div>
       <ToastContainer autoClose={2000} theme="colored" position="top-center" />

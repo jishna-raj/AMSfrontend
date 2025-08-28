@@ -192,10 +192,6 @@ function InventoryManagement() {
                                     {item.quantity} {item.unit}
                                 </div>
                                 <div className="mb-2">
-                                    <span className="fw-medium">Unit Price: </span>
-                                    ₹{item.unitPrice?.toFixed(2)}
-                                </div>
-                                <div className="mb-2">
                                     <span className="fw-medium">Supplier: </span>
                                     {item.supplier}
                                 </div>

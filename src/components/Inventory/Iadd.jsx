@@ -13,7 +13,6 @@ function IAdd({ onAddItem = () => {} }) {
     quantity: '',
     unit: '',
     minimumThreshold: '',
-    unitPrice: '',
     supplier: '',
     expiryDate: '',
   });
@@ -39,7 +38,6 @@ function IAdd({ onAddItem = () => {} }) {
       // Convert numeric fields
       const numericFields = {
         quantity: parseFloat(formData.quantity),
-        unitPrice: parseFloat(formData.unitPrice),
         minimumThreshold: parseFloat(formData.minimumThreshold)
       };
 
@@ -89,7 +87,6 @@ function IAdd({ onAddItem = () => {} }) {
       quantity: '',
       unit: '',
       minimumThreshold: '',
-      unitPrice: '',
       supplier: '',
       expiryDate: '',
     });
@@ -166,20 +163,6 @@ function IAdd({ onAddItem = () => {} }) {
             </div>
 
             <div className="row">
-              <div className="col-md-6 mb-3">
-                <label>Unit Price (₹) *</label>
-                <input
-                  type="number"
-                  name="unitPrice"
-                  className="form-control"
-                  value={formData.unitPrice}
-                  onChange={handleChange}
-                  min="0"
-                  step="0.01"
-                  required
-                />
-              </div>
-
               <div className="col-md-6 mb-3">
                 <label>Minimum Threshold *</label>
                 <input

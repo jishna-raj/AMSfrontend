@@ -9,6 +9,7 @@ function ChildBupdate() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
+
   const [child, setChild] = useState({
     name: '',
     age: '',
@@ -18,7 +19,7 @@ function ChildBupdate() {
     parent: '',
     healthRecords: [],
     nutritionStatus: { date: '', status: '' },
-    educationDetails: { preschoolName: '', enrollmentDate: '', progress: '' },
+    AdharNumber: '',
     guardian: { name: '', relationship: '', contactNumber: '', email: '' },
     lastVisitDate: '',
     vaccinationDetails: []
@@ -47,10 +48,7 @@ function ChildBupdate() {
               ...data.nutritionStatus,
               date: formatDateForInput(data.nutritionStatus?.date)
             },
-            educationDetails: {
-              ...data.educationDetails,
-              enrollmentDate: formatDateForInput(data.educationDetails?.enrollmentDate)
-            },
+            AdharNumber: data.AdharNumber || '',
             healthRecords: data.healthRecords?.map(record => ({
               ...record,
               date: formatDateForInput(record.date)
@@ -75,11 +73,11 @@ function ChildBupdate() {
   const handleChange = (e) => {
     const { name, value } = e.target
     const keys = name.split('.')
-    
+
     setChild(prev => {
       const newState = JSON.parse(JSON.stringify(prev))
       let current = newState
-      
+
       for (let i = 0; i < keys.length - 1; i++) {
         const key = keys[i]
         if (key.includes('[')) {
@@ -91,7 +89,7 @@ function ChildBupdate() {
           current = current[key]
         }
       }
-      
+
       const lastKey = keys[keys.length - 1]
       current[lastKey] = value
       return newState
@@ -101,7 +99,6 @@ function ChildBupdate() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      // Convert dates to ISO format
       const payload = {
         ...child,
         dateOfBirth: child.dateOfBirth ? `${child.dateOfBirth}T00:00:00.000Z` : null,
@@ -109,11 +106,6 @@ function ChildBupdate() {
         nutritionStatus: {
           ...child.nutritionStatus,
           date: child.nutritionStatus.date ? `${child.nutritionStatus.date}T00:00:00.000Z` : null
-        },
-        educationDetails: {
-          ...child.educationDetails,
-          enrollmentDate: child.educationDetails.enrollmentDate ? 
-            `${child.educationDetails.enrollmentDate}T00:00:00.000Z` : null
         },
         healthRecords: child.healthRecords.map(record => ({
           ...record,
@@ -128,11 +120,6 @@ function ChildBupdate() {
 
       const response = await updateaChildBeneficiaryApi(id, payload)
 
-      console.log(payload);
-      console.log(response);
-      
-      
-      
       if (response.status === 200) {
         toast.success('Child updated successfully!')
         navigate('/child-beneficiary')
@@ -154,43 +141,23 @@ function ChildBupdate() {
       <h1 className="form-title">Update Child Beneficiary</h1>
       
       <form className="beneficiary-form" onSubmit={handleSubmit}>
-        {/* Personal Information Section */}
+        {/* Personal Information */}
         <fieldset className="form-section">
           <legend className="section-title">Personal Information</legend>
           <div className="form-grid">
             <div className="input-group">
               <label className="form-label">Full Name</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                name="name"
-                value={child.name}
-                onChange={handleChange}
-                required 
-              />
+              <input type="text" className="form-input" name="name" value={child.name} onChange={handleChange} required />
             </div>
-            
+
             <div className="input-group">
               <label className="form-label">Age</label>
-              <input 
-                type="number" 
-                className="form-input" 
-                name="age"
-                value={child.age}
-                onChange={handleChange}
-                required 
-              />
+              <input type="number" className="form-input" name="age" value={child.age} onChange={handleChange} required />
             </div>
 
             <div className="input-group">
               <label className="form-label">Gender</label>
-              <select 
-                className="form-input" 
-                name="gender"
-                value={child.gender}
-                onChange={handleChange}
-                required
-              >
+              <select className="form-input" name="gender" value={child.gender} onChange={handleChange} required>
                 <option value="">Select Gender</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
@@ -200,118 +167,41 @@ function ChildBupdate() {
 
             <div className="input-group">
               <label className="form-label">Date of Birth</label>
-              <input 
-                type="date" 
-                className="form-input" 
-                name="dateOfBirth"
-                value={child.dateOfBirth}
-                onChange={handleChange}
-                required 
-              />
+              <input type="date" className="form-input" name="dateOfBirth" value={child.dateOfBirth} onChange={handleChange} required />
             </div>
           </div>
         </fieldset>
 
-        {/* Address Information */}
+        {/* Address Details */}
         <fieldset className="form-section">
           <legend className="section-title">Address Details</legend>
           <div className="form-grid">
-            <div className="input-group">
-              <label className="form-label">Street</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                name="address.street"
-                value={child.address.street}
-                onChange={handleChange}
-              />
-            </div>
-            
-            <div className="input-group">
-              <label className="form-label">City</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                name="address.city"
-                value={child.address.city}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="input-group">
-              <label className="form-label">State</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                name="address.state"
-                value={child.address.state}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="input-group">
-              <label className="form-label">Zip Code</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                name="address.zipCode"
-                value={child.address.zipCode}
-                onChange={handleChange}
-              />
-            </div>
+            {['street', 'city', 'state', 'zipCode'].map(field => (
+              <div className="input-group" key={field}>
+                <label className="form-label">{field.charAt(0).toUpperCase() + field.slice(1)}</label>
+                <input type="text" className="form-input" name={`address.${field}`} value={child.address[field]} onChange={handleChange} />
+              </div>
+            ))}
           </div>
         </fieldset>
 
-        {/* Guardian Information */}
+        {/* Guardian Info */}
         <fieldset className="form-section">
           <legend className="section-title">Guardian Information</legend>
           <div className="form-grid">
-            <div className="input-group">
-              <label className="form-label">Guardian Name</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                name="guardian.name"
-                value={child.guardian.name}
-                onChange={handleChange}
-                required 
-              />
-            </div>
-            
-            <div className="input-group">
-              <label className="form-label">Relationship</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                name="guardian.relationship"
-                value={child.guardian.relationship}
-                onChange={handleChange}
-                required 
-              />
-            </div>
-
-            <div className="input-group">
-              <label className="form-label">Contact Number</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                name="guardian.contactNumber"
-                value={child.guardian.contactNumber}
-                onChange={handleChange}
-                required 
-              />
-            </div>
-
-            <div className="input-group">
-              <label className="form-label">Email</label>
-              <input 
-                type="email" 
-                className="form-input" 
-                name="guardian.email"
-                value={child.guardian.email}
-                onChange={handleChange}
-              />
-            </div>
+            {['name', 'relationship', 'contactNumber', 'email'].map(field => (
+              <div className="input-group" key={field}>
+                <label className="form-label">Guardian {field.charAt(0).toUpperCase() + field.slice(1)}</label>
+                <input
+                  type={field === 'email' ? 'email' : 'text'}
+                  className="form-input"
+                  name={`guardian.${field}`}
+                  value={child.guardian[field]}
+                  onChange={handleChange}
+                  required={field !== 'email'}
+                />
+              </div>
+            ))}
           </div>
         </fieldset>
 
@@ -320,61 +210,18 @@ function ChildBupdate() {
           <legend className="section-title">Health Records</legend>
           {child.healthRecords.map((record, index) => (
             <div className="form-grid" key={index}>
-              <div className="input-group">
-                <label className="form-label">Date</label>
-                <input 
-                  type="date" 
-                  className="form-input" 
-                  name={`healthRecords[${index}].date`}
-                  value={record.date}
-                  onChange={handleChange}
-                />
-              </div>
-              
-              <div className="input-group">
-                <label className="form-label">Weight (kg)</label>
-                <input 
-                  type="number" 
-                  step="0.1" 
-                  className="form-input" 
-                  name={`healthRecords[${index}].weight`}
-                  value={record.weight}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="input-group">
-                <label className="form-label">Height (cm)</label>
-                <input 
-                  type="number" 
-                  className="form-input" 
-                  name={`healthRecords[${index}].height`}
-                  value={record.height}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="input-group">
-                <label className="form-label">Immunizations</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  name={`healthRecords[${index}].immunizations`}
-                  value={record.immunizations}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="input-group">
-                <label className="form-label">Recent Illnesses</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  name={`healthRecords[${index}].illnesses`}
-                  value={record.illnesses}
-                  onChange={handleChange}
-                />
-              </div>
+              {['date', 'weight', 'height', 'immunizations', 'illnesses'].map(key => (
+                <div className="input-group" key={key}>
+                  <label className="form-label">{key.charAt(0).toUpperCase() + key.slice(1)}</label>
+                  <input
+                    type={key === 'date' ? 'date' : key === 'weight' || key === 'height' ? 'number' : 'text'}
+                    className="form-input"
+                    name={`healthRecords[${index}].${key}`}
+                    value={record[key]}
+                    onChange={handleChange}
+                  />
+                </div>
+              ))}
             </div>
           ))}
         </fieldset>
@@ -385,25 +232,11 @@ function ChildBupdate() {
           <div className="form-grid">
             <div className="input-group">
               <label className="form-label">Assessment Date</label>
-              <input 
-                type="date" 
-                className="form-input" 
-                name="nutritionStatus.date"
-                value={child.nutritionStatus.date}
-                onChange={handleChange}
-                required 
-              />
+              <input type="date" className="form-input" name="nutritionStatus.date" value={child.nutritionStatus.date} onChange={handleChange} required />
             </div>
-            
             <div className="input-group">
               <label className="form-label">Status</label>
-              <select 
-                className="form-input" 
-                name="nutritionStatus.status"
-                value={child.nutritionStatus.status}
-                onChange={handleChange}
-                required
-              >
+              <select className="form-input" name="nutritionStatus.status" value={child.nutritionStatus.status} onChange={handleChange} required>
                 <option value="">Select Status</option>
                 <option value="Normal">Normal</option>
                 <option value="Underweight">Underweight</option>
@@ -413,44 +246,20 @@ function ChildBupdate() {
           </div>
         </fieldset>
 
-        {/* Education Details */}
+        {/* Aadhar Number Field */}
         <fieldset className="form-section">
-          <legend className="section-title">Education Details</legend>
+          <legend className="section-title">Aadhar Information</legend>
           <div className="form-grid">
             <div className="input-group">
-              <label className="form-label">Preschool Name</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                name="educationDetails.preschoolName"
-                value={child.educationDetails.preschoolName}
-                onChange={handleChange}
-                required 
-              />
-            </div>
-            
-            <div className="input-group">
-              <label className="form-label">Enrollment Date</label>
-              <input 
-                type="date" 
-                className="form-input" 
-                name="educationDetails.enrollmentDate"
-                value={child.educationDetails.enrollmentDate}
-                onChange={handleChange}
-                required 
-              />
-            </div>
-
-            <div className="input-group">
-              <label className="form-label">Progress Report</label>
-              <textarea 
-                className="form-input" 
-                rows="4" 
-                name="educationDetails.progress"
-                value={child.educationDetails.progress}
+              <label className="form-label">Aadhar Number</label>
+              <input
+                type="text"
+                className="form-input"
+                name="AdharNumber"
+                value={child.AdharNumber}
                 onChange={handleChange}
                 required
-              ></textarea>
+              />
             </div>
           </div>
         </fieldset>
@@ -460,52 +269,23 @@ function ChildBupdate() {
           <legend className="section-title">Vaccination Details</legend>
           {child.vaccinationDetails.map((vaccine, index) => (
             <div className="form-grid" key={index}>
-              <div className="input-group">
-                <label className="form-label">Vaccine Name</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  name={`vaccinationDetails[${index}].vaccineName`}
-                  value={vaccine.vaccineName}
-                  onChange={handleChange}
-                  required 
-                />
-              </div>
-              
-              <div className="input-group">
-                <label className="form-label">Date Administered</label>
-                <input 
-                  type="date" 
-                  className="form-input" 
-                  name={`vaccinationDetails[${index}].dateAdministered`}
-                  value={vaccine.dateAdministered}
-                  onChange={handleChange}
-                  required 
-                />
-              </div>
-
-              <div className="input-group">
-                <label className="form-label">Administered By</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  name={`vaccinationDetails[${index}].administeredBy`}
-                  value={vaccine.administeredBy}
-                  onChange={handleChange}
-                  required 
-                />
-              </div>
-
-              <div className="input-group">
-                <label className="form-label">Notes</label>
-                <textarea 
-                  className="form-input" 
-                  rows="2"
-                  name={`vaccinationDetails[${index}].notes`}
-                  value={vaccine.notes}
-                  onChange={handleChange}
-                ></textarea>
-              </div>
+              {['vaccineName', 'dateAdministered', 'administeredBy', 'notes'].map(field => (
+                <div className="input-group" key={field}>
+                  <label className="form-label">{field.replace(/([A-Z])/g, ' $1').trim()}</label>
+                  {field === 'notes' ? (
+                    <textarea className="form-input" rows="2" name={`vaccinationDetails[${index}].${field}`} value={vaccine[field]} onChange={handleChange} />
+                  ) : (
+                    <input
+                      type={field === 'dateAdministered' ? 'date' : 'text'}
+                      className="form-input"
+                      name={`vaccinationDetails[${index}].${field}`}
+                      value={vaccine[field]}
+                      onChange={handleChange}
+                      required
+                    />
+                  )}
+                </div>
+              ))}
             </div>
           ))}
         </fieldset>
