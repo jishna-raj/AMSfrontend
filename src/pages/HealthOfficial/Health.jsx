@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './Health.css';
+import './health.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faFileExcel, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
