@@ -5,7 +5,7 @@ import { Modal } from 'react-bootstrap';
 import { addInventoryApi } from '../../services/allapi';
 import { toast } from 'react-toastify';
 
-function IAdd({ onAddItem = () => {} }) {
+function Iadd({ onAddItem = () => {} }) {
   const [show, setShow] = useState(false);
   const [formData, setFormData] = useState({
     itemName: '',
@@ -217,4 +217,4 @@ function IAdd({ onAddItem = () => {} }) {
   );
 }
 
-export default IAdd;
+export default Iadd;

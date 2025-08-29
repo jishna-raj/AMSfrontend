@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getaChildByIdApi } from '../../services/allapi';
-import './Child.css';
+import './child.css';
 import { serverUrl } from '../../services/serverurl';
 
 function Child() {
