@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getaChildByIdApi, getAnotificationApi } from '../../services/allapi'; // Adjust the import path as needed
-import './Child.css'; // Import the CSS file
+import './child.css'; // Import the CSS file
 import { serverUrl } from '../../services/serverurl';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
