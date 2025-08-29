@@ -3,7 +3,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IUpdate from '../Inventory/IUpdate';
 import IOut from '../Inventory/IOut';
-import IAdd from '../Inventory/IAdd';
+import IAdd from '../Inventory/Iadd';
 import { Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import { getAllinventoryApi, deleteinventoryApi } from '../../services/allapi';
