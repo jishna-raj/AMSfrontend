@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import './HealthComplaint.css'; // Import the CSS file
+import './Healthcomplaint.css'; // Import the CSS file
 import { addHealthComplaintApi } from '../../services/allapi';
 
 
-function HealthComplaint() {
+function Healthcomplaint() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -130,4 +130,4 @@ function HealthComplaint() {
   );
 }
 
-export default HealthComplaint;
+export default Healthcomplaint;
